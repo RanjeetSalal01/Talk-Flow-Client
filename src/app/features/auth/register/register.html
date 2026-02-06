@@ -3,97 +3,144 @@
 >
   <div class="w-full max-w-6xl flex items-center justify-between gap-64">
     <!-- Left Section - Sign Up Card -->
-    <div class="w-full max-w-md animate-slide-up">
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="handleSubmit()"
+      class="w-full max-w-md animate-slide-up"
+    >
       <div class="bg-white rounded-3xl shadow-2xl p-10">
-        <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Create Account</h2>
-        <p class="text-gray-500 mb-8 text-center">Join TalkFlow and start connecting</p>
+        <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">Create Account</h2>
+        <p class="text-gray-500 mb-8 text-sm text-center">Join TalkFlow and start connecting</p>
 
         <!-- Email Input -->
         <div class="mb-5">
-          <label class="block text-gray-700 text-sm font-medium mb-2">User Name</label>
+          <label class="block text-gray-700 text-xs font-medium mb-2">User Name</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <lucide-icon name="user" size="18"></lucide-icon>
             </div>
             <input
               type="text"
+              formControlName="username"
               placeholder="Enter your user name"
-              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+              class="w-full pl-10 pr-4 text-xs py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
             />
+          </div>
+          <div *ngIf="isSubmitted() && form['username'].errors">
+            <p class="error" *ngIf="form['username'].errors['required']">User name is required.</p>
           </div>
         </div>
 
         <!-- Email Input -->
         <div class="mb-5">
-          <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
+          <label class="block text-gray-700 text-xs font-medium mb-2">Email</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <lucide-icon name="mail" size="18"></lucide-icon>
             </div>
             <input
               type="email"
+              formControlName="email"
               placeholder="Enter your email"
-              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+              class="w-full pl-10 pr-4 text-xs py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
             />
+          </div>
+          <div *ngIf="isSubmitted() && form['email'].errors">
+            <p class="error" *ngIf="form['email'].errors['required']">Email is required.</p>
+            <p class="error" *ngIf="form['email'].errors['pattern']">
+              Please enter a valid email address.
+            </p>
           </div>
         </div>
 
         <!-- Password Input -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-2">
-            <label class="block text-gray-700 text-sm font-medium">Password</label>
+            <label class="block text-gray-700 text-xs font-medium">Password</label>
           </div>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <lucide-icon name="lock" size="18"></lucide-icon>
             </div>
             <input
-              type="password"
+              formControlName="password"
+              [type]="toggleEye ? 'text' : 'password'"
               placeholder="Enter your password"
-              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+              class="w-full pl-10 pr-4 text-xs py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-            <button class="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <lucide-icon name="eye" size="18" class="text-gray-400 cursor-pointer"></lucide-icon>
+            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center">
               <lucide-icon
+                name="eye"
+                *ngIf="!toggleEye"
+                (click)="toggleEyeIcon()"
+                size="18"
+                class="text-gray-400 cursor-pointer"
+              ></lucide-icon>
+              <lucide-icon
+                *ngIf="toggleEye"
+                (click)="toggleEyeIcon()"
                 name="eye-closed"
                 size="18"
-                class="text-gray-400 cursor-pointer hidden"
+                class="text-gray-400 cursor-pointer"
               ></lucide-icon>
             </button>
+          </div>
+          <div *ngIf="isSubmitted() && form['password'].errors">
+            <p class="error" *ngIf="form['password'].errors['required']">Password is required.</p>
+            <p class="error" *ngIf="form['password'].errors['minlength']">
+              8 characters, uppercase, lowercase, number and a special character.
+            </p>
           </div>
         </div>
 
         <!-- Confirm password Input -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-2">
-            <label class="block text-gray-700 text-sm font-medium">Confirm Password</label>
+            <label class="block text-gray-700 text-xs font-medium">Confirm Password</label>
           </div>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <lucide-icon name="lock" size="18"></lucide-icon>
             </div>
             <input
-              type="password"
+              formControlName="confirmPassword"
+              [type]="toggleConfirmEye ? 'text' : 'password'"
               placeholder="Confirm your password"
-              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+              class="w-full pl-10 pr-4 text-xs py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-            <button class="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <lucide-icon name="eye" size="18" class="text-gray-400 cursor-pointer"></lucide-icon>
+            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <lucide-icon
+                name="eye"
+                *ngIf="!toggleConfirmEye"
+                (click)="toggleConfirmEyeIcon()"
+                size="18"
+                class="text-gray-400 cursor-pointer"
+              ></lucide-icon>
               <lucide-icon
                 name="eye-closed"
+                *ngIf="toggleConfirmEye"
+                (click)="toggleConfirmEyeIcon()"
                 size="18"
-                class="text-gray-400 cursor-pointer hidden"
+                class="text-gray-400 cursor-pointer"
               ></lucide-icon>
             </button>
+          </div>
+          <div *ngIf="isSubmitted() && form['confirmPassword'].errors">
+            <p class="error" *ngIf="form['confirmPassword'].errors['required']">
+              Confirm password is required.
+            </p>
+            <p class="error" *ngIf="form['confirmPassword'].errors['passwordMismatch']">
+              Passwords do not match.
+            </p>
           </div>
         </div>
 
         <!-- Sign In Button -->
         <button
-          class="w-full gradient-button text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 mb-6"
+          class="w-full gradient-button text-sm text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 mb-6"
         >
-          Sign In
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          Create Account
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -104,12 +151,16 @@
         </button>
 
         <!-- Sign Up Link -->
-        <p class="text-center text-gray-600 text-sm">
+        <p class="text-center text-gray-600 text-[12.5px]">
           Already have an account?
-          <a href="#" class="gradient-text font-medium hover:underline">Sign in</a>
+          <a
+            (click)="redirectToLogin()"
+            class="gradient-text cursor-pointer font-medium hover:underline"
+            >Sign in</a
+          >
         </p>
       </div>
-    </div>
+    </form>
 
     <!-- Right Section -->
     <div class="flex-1 relative flex flex-col animate-slide-in-left">
@@ -128,10 +179,10 @@
       </div>
 
       <!-- Welcome Text -->
-      <h1 class="text-5xl font-bold text-gray-800 mb-4">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">
         Join <span class="gradient-text">TalkFlow</span> Today.
       </h1>
-      <p class="text-gray-600 text-lg mb-12 max-w-md leading-relaxed">
+      <p class="text-gray-600 text-base mb-12 max-w-md leading-relaxed">
         Create your account and start connecting with people around the world. Fast, secure, and
         beautifully simple.
       </p>
