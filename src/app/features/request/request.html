@@ -1,0 +1,170 @@
+<div class="min-h-screen bg-background">
+  <!-- Header -->
+  <div class="border-b border-border bg-card px-6 py-6">
+    <h1 class="text-2xl font-bold text-foreground">Chat Requests</h1>
+    <p class="text-sm text-muted-foreground mt-1">Accept requests to start chatting</p>
+  </div>
+
+  <!-- Tabs and Content -->
+  <div class="w-full px-6 py-8">
+    <!-- Tabs -->
+    <div class="mb-8">
+      <div class="inline-flex w-full bg-secondary/30 dark:bg-secondary/20 rounded-lg p-1">
+        <button
+          (click)="setActiveTab('incoming')"
+          [class]="
+            activeTab === 'incoming' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
+          "
+          class="flex-1 py-2 cursor-pointer px-4 rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2 hover:text-foreground"
+        >
+          Incoming
+          @if (incomingRequests.length > 0) {
+            <span
+              class="ml-2 px-2 py-0.5 bg-primary text-primary-foreground text-xs font-bold rounded-full"
+            >
+              {{ incomingRequests.length }}
+            </span>
+          }
+        </button>
+
+        <button
+          (click)="setActiveTab('outgoing')"
+          [class]="
+            activeTab === 'outgoing' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
+          "
+          class="flex-1 py-2 cursor-pointer px-4 rounded-lg transition-all duration-200 font-medium hover:text-foreground"
+        >
+          Outgoing
+        </button>
+      </div>
+    </div>
+
+    <!-- Requests List -->
+    @if (activeTab === 'incoming') {
+      <div class="space-y-4 animate-slide-up">
+        @if (incomingRequests.length > 0) {
+          @for (request of incomingRequests; track request.id) {
+            <div
+              class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
+            >
+              <div class="flex items-center justify-between gap-4">
+                <!-- User Info -->
+                <div class="flex items-center gap-4 flex-1">
+                  <img
+                    [src]="request.avatar"
+                    alt="{{ request.name }}"
+                    class="w-14 h-14 rounded-full object-cover border-2 border-border shrink-0"
+                  />
+                  <div class="flex-1">
+                    <h4 class="font-semibold text-foreground">{{ request.name }}</h4>
+                    <p class="text-sm text-muted-foreground">{{ request.profession }}</p>
+                    <p class="text-xs text-muted-foreground mt-0.5">{{ request.timeAgo }}</p>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <button
+                    (click)="rejectRequest(request)"
+                    class="action-button flex cursor-pointer items-center justify-center w-11 h-11 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all duration-200"
+                    title="Reject"
+                  >
+                    <lucide-icon name="x" size="18" class="text-red-600"></lucide-icon>
+                  </button>
+                  <button
+                    (click)="acceptRequest(request)"
+                    class="action-button gradient-button cursor-pointer flex items-center justify-center w-11 h-11 text-white rounded-lg transition-all duration-200 hover:shadow-lg"
+                    title="Accept"
+                  >
+                    <lucide-icon name="check" size="18" class="text-white"></lucide-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="text-center py-12">
+            <svg
+              class="w-16 h-16 mx-auto text-muted-foreground/30 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              ></path>
+            </svg>
+            <p class="text-muted-foreground">No incoming requests</p>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="space-y-4 animate-slide-up">
+        @if (outgoingRequests.length > 0) {
+          @for (request of outgoingRequests; track request.id) {
+            <div
+              class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
+            >
+              <div class="flex items-center justify-between gap-4">
+                <!-- User Info -->
+                <div class="flex items-center gap-4 flex-1">
+                  <img
+                    [src]="request.avatar"
+                    alt="{{ request.name }}"
+                    class="w-14 h-14 rounded-full object-cover border-2 border-border shrink-0"
+                  />
+                  <div class="flex-1">
+                    <h4 class="font-semibold text-foreground">{{ request.name }}</h4>
+                    <p class="text-sm text-muted-foreground">{{ request.profession }}</p>
+                    <p class="text-xs text-muted-foreground mt-0.5">{{ request.timeAgo }}</p>
+                  </div>
+                </div>
+
+                <!-- Status and Action -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <span
+                    [class]="
+                      request.status === 'online'
+                        ? 'bg-success/10 text-success'
+                        : 'bg-muted text-muted-foreground'
+                    "
+                    class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap"
+                  >
+                    {{ request.status === 'online' ? 'Pending' : 'No response' }}
+                  </span>
+                  <button
+                    (click)="rejectRequest(request)"
+                    class="action-button flex items-center cursor-pointer justify-center w-11 h-11 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all duration-200"
+                    title="Cancel request"
+                  >
+                    <lucide-icon name="x" size="18" class="text-red-600"></lucide-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="text-center py-12">
+            <svg
+              class="w-16 h-16 mx-auto text-muted-foreground/30 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              ></path>
+            </svg>
+            <p class="text-muted-foreground">No outgoing requests</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

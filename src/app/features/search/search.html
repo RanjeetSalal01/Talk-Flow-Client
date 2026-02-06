@@ -1,0 +1,108 @@
+<div class="min-h-screen bg-background">
+  <!-- Header -->
+  <div class="border-b border-border bg-card px-6 py-6">
+    <h1 class="text-2xl font-bold text-foreground">Find People</h1>
+    <p class="text-sm text-muted-foreground mt-1">Search and connect with new friends</p>
+  </div>
+
+  <div class="w-full px-6 py-8">
+    <!-- Search box -->
+    <div class="mb-6">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+          <lucide-icon name="search" size="18" class="text-muted-foreground"></lucide-icon>
+        </div>
+        <input
+          type="text"
+          placeholder="Search by username or bio..."
+          class="w-full pl-10 pr-2 text-sm py-3 border bg-secondary border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="space-y-4">
+      <!-- Item 1 -->
+      <div class="bg-card border border-border rounded-lg p-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+            alt="alice"
+            class="w-14 h-14 rounded-full object-cover border-2 border-border"
+          />
+          <div>
+            <div class="font-semibold text-foreground">@alice_wonder</div>
+            <div class="text-sm text-muted-foreground">
+              Digital artist | Creating beautiful things
+            </div>
+          </div>
+        </div>
+        <button class="gradient-button cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg text-white">
+          <lucide-icon name="message-square-plus" size="16" class="text-white"></lucide-icon>
+          Request
+        </button>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="bg-card border border-border rounded-lg p-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
+            alt="bob"
+            class="w-14 h-14 rounded-full object-cover border-2 border-border"
+          />
+          <div>
+            <div class="font-semibold text-foreground">@bob_builder</div>
+            <div class="text-sm text-muted-foreground">
+              Full-stack developer | Open source contributor
+            </div>
+          </div>
+        </div>
+        <button class="flex cursor-pointer items-center gap-2 border border-warning px-4 py-2 rounded-lg text-warning">
+          <lucide-icon name="clock" size="16" class="text-warning"></lucide-icon>
+          Pending
+        </button>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="bg-card border border-border rounded-lg p-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop"
+            alt="charlie"
+            class="w-14 h-14 rounded-full object-cover border-2 border-border"
+          />
+          <div>
+            <div class="font-semibold text-foreground">@charlie_music</div>
+            <div class="text-sm text-muted-foreground">Music is life | Guitarist</div>
+          </div>
+        </div>
+        <button class="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full bg-success/10 text-success">
+          <lucide-icon name="check" size="16" class="text-success"></lucide-icon>
+          Friends
+        </button>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="bg-card border border-border rounded-lg p-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop"
+            alt="diana"
+            class="w-14 h-14 rounded-full object-cover border-2 border-border"
+          />
+          <div>
+            <div class="font-semibold text-foreground">@diana_travel</div>
+            <div class="text-sm text-muted-foreground">
+              Exploring the world | 30 countries and counting
+            </div>
+          </div>
+        </div>
+        <button class="gradient-button cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg text-white">
+          <lucide-icon name="message-square-plus" size="16" class="text-white"></lucide-icon>
+          Request
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

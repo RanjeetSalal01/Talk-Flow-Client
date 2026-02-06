@@ -1,0 +1,140 @@
+<div
+  class="bg-linear-to-br from-primary/5 via-white to-primary/5 min-h-screen flex items-center justify-center p-4"
+>
+  <div class="w-full max-w-6xl flex items-center justify-between gap-64">
+    <!-- Left Section - Sign Up Card -->
+    <div class="w-full max-w-md animate-slide-up">
+      <div class="bg-white rounded-3xl shadow-2xl p-10">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Create Account</h2>
+        <p class="text-gray-500 mb-8 text-center">Join TalkFlow and start connecting</p>
+
+        <!-- Email Input -->
+        <div class="mb-5">
+          <label class="block text-gray-700 text-sm font-medium mb-2">User Name</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon name="user" size="18"></lucide-icon>
+            </div>
+            <input
+              type="text"
+              placeholder="Enter your user name"
+              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <!-- Email Input -->
+        <div class="mb-5">
+          <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon name="mail" size="18"></lucide-icon>
+            </div>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-gray-700 text-sm font-medium">Password</label>
+          </div>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon name="lock" size="18"></lucide-icon>
+            </div>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+            <button class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <lucide-icon name="eye" size="18" class="text-gray-400 cursor-pointer"></lucide-icon>
+              <lucide-icon
+                name="eye-closed"
+                size="18"
+                class="text-gray-400 cursor-pointer hidden"
+              ></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm password Input -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-gray-700 text-sm font-medium">Confirm Password</label>
+          </div>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <lucide-icon name="lock" size="18"></lucide-icon>
+            </div>
+            <input
+              type="password"
+              placeholder="Confirm your password"
+              class="w-full pl-10 pr-4 text-sm py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+            <button class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <lucide-icon name="eye" size="18" class="text-gray-400 cursor-pointer"></lucide-icon>
+              <lucide-icon
+                name="eye-closed"
+                size="18"
+                class="text-gray-400 cursor-pointer hidden"
+              ></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sign In Button -->
+        <button
+          class="w-full gradient-button text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 mb-6"
+        >
+          Sign In
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Sign Up Link -->
+        <p class="text-center text-gray-600 text-sm">
+          Already have an account?
+          <a href="#" class="gradient-text font-medium hover:underline">Sign in</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="flex-1 relative flex flex-col animate-slide-in-left">
+      <!-- Logo Icons -->
+      <div class="flex items-start gap-4 mb-8 relative">
+        <div class="flex animate-fade-in items-start gap-4ml-0">
+          <div
+            class="w-20 h-20 gradient-button rounded-2xl flex items-center justify-center shadow-lg animate-scale-pulse"
+          >
+            <lucide-icon name="message-circle" size="40" class="text-white"></lucide-icon>
+          </div>
+        </div>
+        <div
+          class="w-16 h-16 -top-18 right-4 absolute bg-linear-to-br from-accent/30 to-accent/10 rounded-2xl animate-float-rotate"
+        ></div>
+      </div>
+
+      <!-- Welcome Text -->
+      <h1 class="text-5xl font-bold text-gray-800 mb-4">
+        Join <span class="gradient-text">TalkFlow</span> Today.
+      </h1>
+      <p class="text-gray-600 text-lg mb-12 max-w-md leading-relaxed">
+        Create your account and start connecting with people around the world. Fast, secure, and
+        beautifully simple.
+      </p>
+    </div>
+  </div>
+</div>

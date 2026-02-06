@@ -1,0 +1,65 @@
+/* Slide in from left with fade */
+    .animate-slide-in-left {
+        animation: slideInLeft 1.2s ease-out;
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Fade in animation */
+    .animate-fade-in {
+        animation: fadeInAnimation 1.2s ease-out;
+    }
+
+    @keyframes fadeInAnimation {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Slide up from bottom animation */
+    .animate-slide-up {
+        animation: slideUpAnimation 1s ease-out;
+    }
+
+    @keyframes slideUpAnimation {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Scale and pulse animation for logo */
+    .animate-scale-pulse {
+        animation: scalePulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes scalePulse {
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }

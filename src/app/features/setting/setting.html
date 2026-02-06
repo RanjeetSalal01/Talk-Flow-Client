@@ -1,0 +1,66 @@
+<div class="min-h-screen bg-background">
+	<div class="max-w-3xl mx-auto px-6 py-8">
+		<header class="mb-6">
+			<h1 class="text-2xl font-bold text-foreground">Settings</h1>
+			<p class="text-sm text-muted-foreground mt-1">Manage your account settings</p>
+		</header>
+
+		<div class="space-y-4">
+			<!-- Change Password -->
+			<button class="w-full flex items-center justify-between bg-card border border-border rounded-lg p-4 hover:shadow-sm transition">
+				<div class="flex items-center gap-4">
+					<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+						<lucide-icon name="lock" size="20" class="text-primary"></lucide-icon>
+					</div>
+					<div class="text-left">
+						<div class="font-semibold text-foreground">Change Password</div>
+						<div class="text-sm text-muted-foreground">Update your password</div>
+					</div>
+				</div>
+				<svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			</button>
+
+			<!-- Blocked Users -->
+			<button class="w-full flex items-center justify-between bg-card border border-border rounded-lg p-4 hover:shadow-sm transition">
+				<div class="flex items-center gap-4">
+					<div class="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center">
+						<lucide-icon name="user-x" size="20" class="text-destructive"></lucide-icon>
+					</div>
+					<div class="text-left">
+						<div class="font-semibold text-foreground">Blocked Users</div>
+						<div class="text-sm text-muted-foreground">2 blocked users</div>
+					</div>
+				</div>
+				<svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			</button>
+
+			<!-- Privacy & Security -->
+			<button class="w-full flex items-center justify-between bg-card border border-border rounded-lg p-4 hover:shadow-sm transition">
+				<div class="flex items-center gap-4">
+					<div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
+						<lucide-icon name="settings" size="20" class="text-warning"></lucide-icon>
+					</div>
+					<div class="text-left">
+						<div class="font-semibold text-foreground">Privacy & Security</div>
+						<div class="text-sm text-muted-foreground">Manage your privacy settings</div>
+					</div>
+				</div>
+				<svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			</button>
+
+			<!-- Logout -->
+			<button class="w-full flex items-center justify-between bg-card border border-destructive/20 rounded-lg p-4 hover:shadow-sm transition">
+				<div class="flex items-center gap-4">
+					<div class="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center">
+						<lucide-icon name="log-out" size="20" class="text-destructive"></lucide-icon>
+					</div>
+					<div class="text-left">
+						<div class="font-semibold text-destructive">Logout</div>
+						<div class="text-sm text-muted-foreground">Sign out of your account</div>
+					</div>
+				</div>
+				<svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			</button>
+		</div>
+	</div>
+</div>
