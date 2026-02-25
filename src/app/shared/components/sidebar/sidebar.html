@@ -1,11 +1,11 @@
-<div class="h-screen w-72 bg-sidebar-background flex flex-col border-r border-gray-200">
+<div class="h-screen w-64 bg-sidebar-background flex flex-col border-r border-gray-200">
   <!-- Logo Section -->
   <div class="p-6 border-b">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 gradient-button rounded-base flex items-center justify-center">
         <lucide-icon name="message-circle" size="20" class="text-white"></lucide-icon>
       </div>
-      <span class="font-bold text-xl gradient-text">
+      <span class="font-bold text-lg gradient-text">
         TalkFlow
       </span>
     </div>
@@ -32,13 +32,13 @@
         ></lucide-icon>
         <span
           [ngClass]="isSelected(item.id) ? 'text-gray-800' : 'text-gray-600'"
-          class="flex-1 text-left font-semibold"
+          class="flex-1 text-left text-[13px] font-semibold"
         >
           {{item.label}}
         </span>
         <span
           *ngIf="item.badge"
-          class="px-2 py-1 bg-linear-to-r from-primary to-primary text-white text-xs font-bold rounded-full"
+          class="min-w-4 h-4 flex items-center justify-center bg-linear-to-r from-primary to-primary text-white text-[9px] font-bold rounded-full"
         >
           {{item.badge}}
         </span>
@@ -56,8 +56,8 @@
         </div>
         <!-- User Info -->
         <div class="flex-1 min-w-0">
-          <p class="text-gray-900 font-semibold text-sm truncate">John Doe</p>
-          <p class="text-gray-500 text-xs flex items-center gap-1">
+          <p class="text-gray-900 font-semibold text-xs truncate">John Doe</p>
+          <p class="text-gray-500 text-[10px] flex items-center gap-1">
             <span class="w-2 h-2 bg-green-500 rounded-full"></span>
             Online
           </p>
