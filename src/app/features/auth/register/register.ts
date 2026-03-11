@@ -2,6 +2,9 @@ import { Component, OnInit, signal } from '@angular/core';
 import { SharedModule } from '../../../shared/shared.module';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AppService } from '../../../core/services/app.service';
+import { API } from '../../../core/config/api';
+import { Toast, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -12,12 +15,15 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 export class Register implements OnInit {
   registerForm!: FormGroup;
   isSubmitted = signal(false);
+  isLoading = signal(false);
   toggleEye: boolean = false;
   toggleConfirmEye: boolean = false;
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
+    private appService: AppService,
+    private toast: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -25,6 +31,7 @@ export class Register implements OnInit {
     this.registerForm = this.fb.group(
       {
         username: new FormControl('', [Validators.required]),
+        fullName: new FormControl('', [Validators.required]),
         email: new FormControl('', [
           Validators.required,
           Validators.email,
@@ -81,12 +88,24 @@ export class Register implements OnInit {
   }
 
   handleSubmit(): void {
-    // set the submitted signal to true to trigger validation messages
-    console.log('Form submitted with values:', this.registerForm);
     this.isSubmitted.set(true);
 
-    if (this.registerForm.invalid) {
-      return;
-    }
+    if (this.registerForm.invalid || this.isLoading()) return;
+
+    this.isLoading.set(true);
+
+    const payload = this.registerForm.getRawValue();
+
+    this.appService.post(API.endPoint.register, payload).subscribe({
+      next: (res:any) => {
+        this.router.navigate(['/auth/login']);
+        this.isLoading.set(false);
+        this.toast.success('Registration successful');
+      },
+      error: (err) => {
+        this.toast.error(err?.error?.message || 'Registration failed');
+        this.isLoading.set(false);
+      },
+    });
   }
 }

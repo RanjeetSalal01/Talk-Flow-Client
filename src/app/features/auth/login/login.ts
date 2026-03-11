@@ -2,7 +2,11 @@ import { Component, OnInit, signal } from '@angular/core';
 import { SharedModule } from '../../../shared/shared.module';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { AppService } from '../../../core/services/app.service';
+import { take } from 'rxjs/operators';
+import { API } from '../../../core/config/api';
+import { ToastrService } from 'ngx-toastr';
+import { SocketService } from '../../../core/services/socket.service';
 @Component({
   selector: 'app-login',
   imports: [SharedModule],
@@ -12,11 +16,15 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 export class Login implements OnInit {
   loginForm!: FormGroup;
   isSubmitted = signal(false);
+  isLoading = signal(false);
   toggleEye: boolean = false;
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
+    private appService: AppService,
+    private toast: ToastrService,
+    private socket: SocketService
   ) {}
 
   ngOnInit(): void {
@@ -43,17 +51,29 @@ export class Login implements OnInit {
   }
 
   navigateToRegister(): void {
-    console.log('Navigating to register page');
     this.router.navigate(['/auth/register']);
   }
 
   handleSubmit(): void {
-    // set the submitted signal to true to trigger validation messages
-    console.log('Form submitted with values:', this.loginForm);
     this.isSubmitted.set(true);
 
-    if (this.loginForm.invalid) {
-      return;
-    }
+    if (this.loginForm.invalid || this.isLoading()) return;
+
+    this.isLoading.set(true);
+
+    const payload = this.loginForm.getRawValue();
+
+    this.appService.post<{ token: string }>(API.endPoint.login, payload).subscribe({
+      next: (res:any) => {
+        this.router.navigate(['/chats']);
+        this.isLoading.set(false);
+        this.toast.success('Login successful');
+        this.socket.connect(res.userId);
+      },
+      error: (err) => {
+        this.toast.error(err?.error?.message || 'Login failed');
+        this.isLoading.set(false);
+      },
+    });
   }
 }

@@ -5,11 +5,10 @@
     <p class="text-xs text-muted-foreground mt-1">Accept requests to start chatting</p>
   </div>
 
-  <!-- Tabs and Content -->
   <div class="w-full px-6 pb-8 py-2">
     <!-- Tabs -->
     <div class="mb-8">
-      <div class="inline-flex w-full bg-secondary/30 dark:bg-secondary/20 rounded-lg p-1.5">
+      <div class="inline-flex w-full bg-secondary/30 rounded-lg p-1.5">
         <button
           (click)="setActiveTab('incoming')"
           [class]="
@@ -18,153 +17,168 @@
           class="flex-1 py-2 cursor-pointer px-4 rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2 hover:text-foreground text-xs"
         >
           Incoming
-          @if (incomingRequests.length > 0) {
-            <span
-              class="ml-2 min-w-4 h-4 flex justify-center items-center bg-primary text-primary-foreground text-[9px] font-bold rounded-full"
-            >
-              {{ incomingRequests.length }}
-            </span>
-          }
+          <span
+            *ngIf="incomingRequests.length > 0"
+            class="min-w-4 h-4 flex justify-center items-center gap-2 bg-primary text-primary-foreground text-[9px] font-bold rounded-full px-1"
+          >
+            {{ incomingRequests.length }}
+          </span>
         </button>
-
         <button
           (click)="setActiveTab('outgoing')"
           [class]="
             activeTab === 'outgoing' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
           "
-          class="flex-1 py-2 cursor-pointer px-4 rounded-lg text-xs transition-all duration-200 font-medium hover:text-foreground"
+          class="flex-1 py-2 cursor-pointer px-4 rounded-lg text-xs transition-all duration-200 font-medium flex items-center justify-center gap-2 hover:text-foreground"
         >
           Outgoing
+          <span
+            *ngIf="outgoingRequests.length > 0"
+            class="min-w-4 h-4 flex justify-center items-center bg-primary text-primary-foreground text-[9px] font-bold rounded-full px-1"
+          >
+            {{ outgoingRequests.length }}
+          </span>
         </button>
       </div>
     </div>
 
-    <!-- Requests List -->
-    @if (activeTab === 'incoming') {
-      <div class="space-y-4 animate-slide-up">
-        @if (incomingRequests.length > 0) {
-          @for (request of incomingRequests; track request.id) {
-            <div
-              class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
-            >
-              <div class="flex items-center justify-between gap-4">
-                <!-- User Info -->
-                <div class="flex items-center gap-4 flex-1">
-                  <img
-                    [src]="request.avatar"
-                    alt="{{ request.name }}"
-                    class="w-12 h-12 rounded-full object-cover border-2 border-border shrink-0"
-                  />
-                  <div class="flex-1">
-                    <h4 class="font-semibold text-foreground text-xs">{{ request.name }}</h4>
-                    <p class="text-[10px] text-muted-foreground">{{ request.profession }}</p>
-                    <p class="text-[10px] text-muted-foreground mt-0.5">{{ request.timeAgo }}</p>
-                  </div>
-                </div>
+    <!-- Skeleton (shared) -->
+    <ng-template #skeletonList>
+      <div
+        *ngFor="let i of [1, 2, 3]"
+        class="bg-card border border-border rounded-lg p-5 mb-4 animate-pulse"
+      >
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-muted shrink-0"></div>
+          <div class="flex-1 space-y-2">
+            <div class="h-3 bg-muted rounded w-1/3"></div>
+            <div class="h-2 bg-muted rounded w-1/2"></div>
+            <div class="h-2 bg-muted rounded w-1/4"></div>
+          </div>
+          <div class="flex gap-2">
+            <div class="w-8 h-8 rounded-lg bg-muted"></div>
+            <div class="w-8 h-8 rounded-lg bg-muted"></div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
 
-                <!-- Action Buttons -->
-                <div class="flex items-center gap-2 shrink-0">
-                  <button
-                    (click)="rejectRequest(request)"
-                    class="action-button flex cursor-pointer items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all duration-200"
-                    title="Reject"
-                  >
-                    <lucide-icon name="x" size="16" class="text-red-600"></lucide-icon>
-                  </button>
-                  <button
-                    (click)="acceptRequest(request)"
-                    class="action-button gradient-button cursor-pointer flex items-center justify-center w-8 h-8 text-white rounded-lg transition-all duration-200 hover:shadow-lg"
-                    title="Accept"
-                  >
-                    <lucide-icon name="check" size="16" class="text-white"></lucide-icon>
-                  </button>
-                </div>
+    <!-- Incoming -->
+    <div *ngIf="activeTab === 'incoming'" class="space-y-4">
+      <ng-container *ngIf="loadingIncoming; else incomingContent">
+        <ng-container *ngTemplateOutlet="skeletonList"></ng-container>
+      </ng-container>
+
+      <ng-template #incomingContent>
+        <div *ngIf="incomingRequests.length === 0" class="text-center py-12">
+          <div
+            class="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-3"
+          >
+            <lucide-icon name="inbox" size="20" class="text-muted-foreground"></lucide-icon>
+          </div>
+          <p class="text-sm text-muted-foreground">No incoming requests</p>
+        </div>
+
+        <div
+          *ngFor="let req of incomingRequests; trackBy: trackById"
+          class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
+        >
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4 flex-1">
+              <ng-container *ngIf="req.senderId.avatarUrl; else incomingInitials">
+                <img
+                  [src]="req.senderId.avatarUrl"
+                  [alt]="req.senderId.username"
+                  class="w-12 h-12 rounded-full object-cover border-2 border-border shrink-0"
+                />
+              </ng-container>
+              <ng-template #incomingInitials>
+                <app-name-initials [name]="req.senderId.fullName"></app-name-initials>
+              </ng-template>
+              <div class="flex-1">
+                <h4 class="font-semibold text-foreground text-xs">{{ req.senderId.username }}</h4>
+                <p class="text-[10px] text-muted-foreground">{{ req.senderId.bio || 'No bio' }}</p>
+                <p class="text-[10px] text-muted-foreground mt-0.5">
+                  {{ req.createdAt | date: 'mediumDate' }}
+                </p>
               </div>
             </div>
-          }
-        } @else {
-          <div class="text-center py-12">
-            <svg
-              class="w-12 h-12 mx-auto text-muted-foreground/30 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-              ></path>
-            </svg>
-            <p class="text-muted-foreground text-sm">No incoming requests</p>
+            <div class="flex items-center gap-2 shrink-0">
+              <button
+                (click)="rejectRequest(req)"
+                class="flex cursor-pointer items-center justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all duration-200"
+              >
+                <lucide-icon name="x" size="16" class="text-red-600"></lucide-icon>
+              </button>
+              <button
+                (click)="acceptRequest(req)"
+                class="gradient-button cursor-pointer flex items-center justify-center w-8 h-8 text-white rounded-lg transition-all duration-200 hover:shadow-lg"
+              >
+                <lucide-icon name="check" size="16" class="text-white"></lucide-icon>
+              </button>
+            </div>
           </div>
-        }
-      </div>
-    } @else {
-      <div class="space-y-4 animate-slide-up">
-        @if (outgoingRequests.length > 0) {
-          @for (request of outgoingRequests; track request.id) {
-            <div
-              class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
-            >
-              <div class="flex items-center justify-between gap-4">
-                <!-- User Info -->
-                <div class="flex items-center gap-4 flex-1">
-                  <img
-                    [src]="request.avatar"
-                    alt="{{ request.name }}"
-                    class="w-12 h-12 rounded-full object-cover border-2 border-border shrink-0"
-                  />
-                  <div class="flex-1">
-                    <h4 class="font-semibold text-foreground text-xs">{{ request.name }}</h4>
-                    <p class="text-[10px] text-muted-foreground">{{ request.profession }}</p>
-                    <p class="text-[10px] text-muted-foreground mt-0.5">{{ request.timeAgo }}</p>
-                  </div>
-                </div>
+        </div>
+      </ng-template>
+    </div>
 
-                <!-- Status and Action -->
-                <div class="flex items-center gap-2 shrink-0">
-                  <span
-                    [class]="
-                      request.status === 'online'
-                        ? 'bg-success/10 text-success'
-                        : 'bg-muted text-muted-foreground'
-                    "
-                    class="px-3 py-1 rounded-full text-[10px] font-medium whitespace-nowrap"
-                  >
-                    {{ request.status === 'online' ? 'Pending' : 'No response' }}
-                  </span>
-                  <button
-                    (click)="rejectRequest(request)"
-                    class="action-button flex items-center cursor-pointer justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all duration-200"
-                    title="Cancel request"
-                  >
-                    <lucide-icon name="x" size="16" class="text-red-600"></lucide-icon>
-                  </button>
-                </div>
+    <!-- Outgoing -->
+    <div *ngIf="activeTab === 'outgoing'" class="space-y-4">
+      <ng-container *ngIf="loadingOutgoing; else outgoingContent">
+        <ng-container *ngTemplateOutlet="skeletonList"></ng-container>
+      </ng-container>
+
+      <ng-template #outgoingContent>
+        <div *ngIf="outgoingRequests.length === 0" class="text-center py-12">
+          <div
+            class="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-3"
+          >
+            <lucide-icon name="send" size="20" class="text-muted-foreground"></lucide-icon>
+          </div>
+          <p class="text-sm text-muted-foreground">No outgoing requests</p>
+        </div>
+
+        <div
+          *ngFor="let req of outgoingRequests; trackBy: trackById"
+          class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
+        >
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4 flex-1">
+              <ng-container *ngIf="req.receiverId.avatarUrl; else outgoingInitials">
+                <img
+                  [src]="req.receiverId.avatarUrl"
+                  [alt]="req.receiverId.username"
+                  class="w-12 h-12 rounded-full object-cover border-2 border-border shrink-0"
+                />
+              </ng-container>
+              <ng-template #outgoingInitials>
+                <app-name-initials [name]="req.receiverId.fullName"></app-name-initials>
+              </ng-template>
+              <div class="flex-1">
+                <h4 class="font-semibold text-foreground text-xs">{{ req.receiverId.username }}</h4>
+                <p class="text-[10px] text-muted-foreground">
+                  {{ req.receiverId.bio || 'No bio' }}
+                </p>
+                <p class="text-[10px] text-muted-foreground mt-0.5">
+                  {{ req.createdAt | date: 'mediumDate' }}
+                </p>
               </div>
             </div>
-          }
-        } @else {
-          <div class="text-center py-12">
-            <svg
-              class="w-12 h-12 mx-auto text-muted-foreground/30 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-              ></path>
-            </svg>
-            <p class="text-muted-foreground text-sm">No outgoing requests</p>
+            <div class="flex items-center gap-2 shrink-0">
+              <span
+                class="px-3 py-1 rounded-full text-[10px] font-medium bg-warning/10 text-warning"
+                >Pending</span
+              >
+              <button
+                (click)="rejectRequest(req)"
+                class="flex items-center cursor-pointer justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all duration-200"
+              >
+                <lucide-icon name="x" size="16" class="text-red-600"></lucide-icon>
+              </button>
+            </div>
           </div>
-        }
-      </div>
-    }
+        </div>
+      </ng-template>
+    </div>
   </div>
 </div>

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+.toast-container .ngx-toastr {
+  font-size: 12px !important;
+}
+
 /* TalkFlow Design System - Modern Dark Theme with Teal Gradients */
 @theme {
     --color-background: hsl(0 0% 100%);
@@ -262,3 +266,4 @@
 .error {
     @apply text-destructive text-xs mt-1;
 }
+

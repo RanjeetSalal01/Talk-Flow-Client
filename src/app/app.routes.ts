@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Login } from './features/auth/login/login';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { Chat } from './features/chat/chat';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -10,6 +11,7 @@ export const routes: Routes = [
   },
   {
     path: '',
+    canActivate: [authGuard],
     component: MainLayoutComponent,
     children: [
       {

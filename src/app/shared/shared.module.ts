@@ -32,6 +32,10 @@ import {
   PhoneIncoming,
   PhoneMissed,
   ChevronRight,
+  Plus,
+  ChevronLeft,
+  ArrowLeft,
+  Inbox,
 } from 'lucide-angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -72,6 +76,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
       PhoneMissed,
       PhoneIncoming,
       ChevronRight,
+      Plus,
+      ChevronLeft,
+      ArrowLeft,
+      Inbox
     }),
   ],
   exports: [CommonModule, FormsModule, ReactiveFormsModule, LucideAngularModule],

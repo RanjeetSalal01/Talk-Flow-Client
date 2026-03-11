@@ -1,24 +1,19 @@
-import { APP_INITIALIZER, ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideToastr } from 'ngx-toastr';
 
-import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import { ConfigService } from './core/config/config.service';
-
-export function initApp(configService: ConfigService) {
-  return () => configService.loadConfig();
-}
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initApp,
-      deps: [ConfigService],
-      multi: true,
-    },
+    provideToastr({
+      positionClass: 'toast-top-right',
+      timeOut: 3000,
+      preventDuplicates: true,
+    }),
   ]
 };

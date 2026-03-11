@@ -1,216 +1,380 @@
 <div class="flex h-screen w-full bg-background">
   <!-- Conversations Panel -->
-  <div class="w-130 flex flex-col bg-card border-r border-border">
-    <!-- header -->
-    <div class="border-b flex flex-col px-4 py-4 gap-y-5">
-      <!-- Title -->
-      <h2 class="text-xl font-bold text-foreground">Chats</h2>
-
-      <!-- Search -->
-      <div class="relative">
-        <lucide-icon
-          name="search"
-          size="18"
-          class="absolute left-1.5 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
-        ></lucide-icon>
-        <input
-          type="text"
-          placeholder="Search conversations..."
-          class="w-full pl-10 pr-2 text-xs py-2 border bg-secondary border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
-        />
+  <div class="w-130 flex flex-col bg-card border-r border-border relative">
+    <!-- ── CHAT LIST VIEW ── -->
+    <ng-container *ngIf="!showFriends">
+      <div class="border-b flex flex-col px-4 py-4 gap-y-5">
+        <h2 class="text-xl font-bold text-foreground">Chats</h2>
+        <div class="relative">
+          <lucide-icon
+            name="search"
+            size="18"
+            class="absolute left-1.5 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+          ></lucide-icon>
+          <input
+            type="text"
+            placeholder="Search conversations..."
+            class="w-full pl-10 pr-2 text-xs py-2 border bg-secondary border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
       </div>
-    </div>
 
-    <!-- Conversations List -->
-    <div class="flex-1 overflow-y-auto">
-      @for (conversation of conversations; track conversation.id) {
+      <div class="flex-1 overflow-y-auto">
+        <!-- Skeleton -->
+        <ng-container *ngIf="loadingConvs">
+          <div *ngFor="let i of [1, 2, 3, 4]" class="border-b py-3.5 px-4 flex gap-3 animate-pulse">
+            <div class="w-12 h-12 rounded-full bg-muted shrink-0"></div>
+            <div class="flex-1 space-y-2 py-1">
+              <div class="h-3 bg-muted rounded w-1/2"></div>
+              <div class="h-2 bg-muted rounded w-3/4"></div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Empty -->
         <div
+          *ngIf="!loadingConvs && convs.length === 0"
+          class="flex flex-col items-center justify-center h-full gap-3 px-6 text-center py-16"
+        >
+          <div class="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+            <lucide-icon
+              name="message-circle"
+              size="20"
+              class="text-muted-foreground"
+            ></lucide-icon>
+          </div>
+          <p class="text-sm font-medium text-foreground/70">No conversations yet</p>
+          <p class="text-xs text-muted-foreground">Start a new chat by clicking the button below</p>
+        </div>
+
+        <!-- List -->
+        <div
+          *ngFor="let conv of convs; trackBy: trackByConv"
           class="border-b py-3.5 px-4 cursor-pointer transition-all duration-200"
-          [class]="
-            selectedConversation?.id === conversation.id
-              ? 'bg-secondary'
-              : 'hover:bg-secondary bg-white'
-          "
-          (click)="selectConversation(conversation)"
+          [class]="selectedConv?._id === conv._id ? 'bg-secondary' : 'hover:bg-secondary'"
+          (click)="selectConv(conv)"
         >
           <div class="flex gap-3">
-            <!-- Avatar -->
-            <div class="relative shrink-0">
+            <div *ngIf="conv.avatarUrl; else convInitials" class="relative shrink-0">
               <img
-                [src]="conversation.avatar"
-                alt="{{ conversation.name }}"
+                [src]="conv.avatarUrl"
+                [alt]="conv.fullName"
                 class="w-12 h-12 rounded-full object-cover border-2 border-border"
               />
-              @if (conversation.isTyping) {
-                <div
-                  class="absolute bottom-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-card"
-                  style="box-shadow: 0 0 6px rgb(34, 197, 94) / 0.6"
-                ></div>
-              }
+              <div
+                *ngIf="conv.isOnline"
+                class="absolute bottom-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-card"
+              ></div>
             </div>
-
-            <!-- Content -->
+            <ng-template #convInitials>
+              <app-name-initials
+                [name]="conv.fullName"
+                [isOnline]="conv.isOnline"
+              ></app-name-initials>
+            </ng-template>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-center gap-2">
-                <h3 class="text-xs font-semibold text-foreground">{{ conversation.name }}</h3>
+                <h3 class="text-xs font-semibold text-foreground">{{ conv.fullName }}</h3>
                 <span class="text-[10px] text-muted-foreground shrink-0">{{
-                  conversation.timestamp
+                  conv.lastMessageAt | date: 'shortTime'
                 }}</span>
               </div>
               <div class="flex justify-between items-center gap-2 mt-0.5">
-                @if (conversation.isTyping) {
-                  <span class="text-[10px] text-primary font-medium flex items-center gap-1">
-                    typing
-                    <span class="w-1 h-1 bg-primary rounded-full animate-pulse-soft"></span>
-                    <span
-                      class="w-1 h-1 bg-primary rounded-full animate-pulse-soft"
-                      style="animation-delay: 0.2s"
-                    ></span>
-                    <span
-                      class="w-1 h-1 bg-primary rounded-full animate-pulse-soft"
-                      style="animation-delay: 0.4s"
-                    ></span>
-                  </span>
-                } @else {
-                  <p class="text-xs text-muted-foreground truncate">
-                    {{ conversation.lastMessage }}
-                  </p>
-                }
-                @if (conversation.unreadCount > 0) {
+                <span
+                  *ngIf="typingUsers.has(conv._id)"
+                  class="text-[10px] text-primary font-medium flex items-center gap-1"
+                >
+                  typing
+                  <span class="w-1 h-1 bg-primary rounded-full animate-pulse"></span>
                   <span
-                    class="flex items-center justify-center min-w-4 h-4 bg-primary text-primary-foreground rounded-full text-[9px] font-bold shrink-0"
-                    >{{ conversation.unreadCount }}</span
-                  >
-                }
+                    class="w-1 h-1 bg-primary rounded-full animate-pulse"
+                    style="animation-delay: 0.2s"
+                  ></span>
+                  <span
+                    class="w-1 h-1 bg-primary rounded-full animate-pulse"
+                    style="animation-delay: 0.4s"
+                  ></span>
+                </span>
+                <p
+                  *ngIf="!typingUsers.has(conv._id)"
+                  class="text-[10px] text-muted-foreground truncate"
+                >
+                  {{ conv.lastMessage }}
+                </p>
+                <span
+                  *ngIf="conv.unreadCount > 0"
+                  class="flex items-center justify-center min-w-4 h-4 bg-primary text-primary-foreground rounded-full text-[9px] font-bold shrink-0"
+                  >{{ conv.unreadCount }}</span
+                >
               </div>
             </div>
           </div>
         </div>
-      }
-    </div>
+      </div>
+
+      <button
+        (click)="showFriends = true"
+        class="absolute bottom-6 right-5 w-12 h-12 gradient-button rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-transform hover:scale-105 active:scale-95"
+      >
+        <lucide-icon name="plus" size="18" class="text-white"></lucide-icon>
+      </button>
+    </ng-container>
+
+    <!-- ── FRIEND LIST VIEW ── -->
+    <ng-container *ngIf="showFriends">
+      <div class="border-b flex flex-col px-4 py-4 gap-y-5">
+        <div class="flex items-center gap-3">
+          <button
+            (click)="showFriends = false"
+            class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-muted transition cursor-pointer"
+          >
+            <lucide-icon name="chevron-left" size="16" class="text-foreground"></lucide-icon>
+          </button>
+          <h2 class="text-xl font-bold text-foreground">New Chat</h2>
+        </div>
+        <div class="relative">
+          <lucide-icon
+            name="search"
+            size="18"
+            class="absolute left-1.5 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+          ></lucide-icon>
+          <input
+            type="text"
+            placeholder="Search friends..."
+            [formControl]="searchCtrl"
+            class="w-full pl-10 pr-2 text-xs py-2 border bg-secondary border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-y-auto">
+        <ng-container *ngIf="loadingFriends">
+          <div *ngFor="let i of [1, 2, 3, 4]" class="border-b py-3.5 px-4 flex gap-3 animate-pulse">
+            <div class="w-10 h-10 rounded-full bg-muted shrink-0"></div>
+            <div class="flex-1 space-y-2 py-1">
+              <div class="h-3 bg-muted rounded w-1/3"></div>
+              <div class="h-2 bg-muted rounded w-1/2"></div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div
+          *ngIf="!loadingFriends && filteredFriends.length === 0"
+          class="flex flex-col items-center justify-center h-full gap-3 px-6 text-center py-16"
+        >
+          <div class="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+            <lucide-icon name="user" size="20" class="text-muted-foreground"></lucide-icon>
+          </div>
+          <p class="text-sm font-medium text-foreground/70">No friends found</p>
+          <p class="text-xs text-muted-foreground">Add friends from the Search page</p>
+        </div>
+
+        <div
+          *ngFor="let friend of filteredFriends; trackBy: trackByFriend"
+          class="border-b py-3 px-4 flex items-center gap-3 cursor-pointer hover:bg-secondary transition-all duration-200"
+          (click)="startChat(friend)"
+        >
+          <div *ngIf="friend.avatarUrl; else friendInitials" class="relative shrink-0">
+            <img
+              [src]="friend.avatarUrl"
+              [alt]="friend.username"
+              class="w-10 h-10 rounded-full object-cover border-2 border-border"
+            />
+            <div
+              *ngIf="friend.isOnline"
+              class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full border-2 border-card"
+            ></div>
+          </div>
+          <ng-template #friendInitials>
+            <app-name-initials [name]="friend.fullName"></app-name-initials>
+          </ng-template>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-foreground">{{ friend.username }}</p>
+            <p class="text-[10px] text-muted-foreground truncate">{{ friend.bio || 'No bio' }}</p>
+          </div>
+          <span *ngIf="friend.isOnline" class="text-[9px] text-success font-medium">Online</span>
+        </div>
+      </div>
+    </ng-container>
   </div>
 
   <!-- Chat Area -->
   <div class="flex flex-col w-full bg-background">
-    @if (selectedConversation) {
-      <!-- Chat Header -->
+    <ng-container *ngIf="selectedConv; else emptyState">
+      <!-- Header -->
       <div class="flex justify-between items-center px-6 py-4 border-b border-border bg-card">
         <div class="flex items-center gap-3">
           <img
-            [src]="selectedConversation.avatar"
-            alt="{{ selectedConversation.name }}"
+            *ngIf="selectedConv.avatarUrl; else headerInitials"
+            [src]="selectedConv.avatarUrl"
             class="w-10 h-10 rounded-full object-cover border-2 border-border"
           />
-          <div>
-            <h2 class="text-xs font-semibold text-foreground">{{ selectedConversation.name }}</h2>
-            <p class="text-[10px] text-success font-medium">Online</p>
+          <ng-template #headerInitials>
+            <app-name-initials [name]="selectedConv.fullName"></app-name-initials>
+          </ng-template>
+          <div class="flex flex-col">
+            <h2 class="text-xs font-semibold text-foreground">{{ selectedConv.fullName }}</h2>
+            <p *ngIf="!selectedConv.isTyping" class="text-[10px] text-success font-medium">
+              {{ selectedConv.isOnline ? 'Online' : 'Offline' }}
+            </p>
           </div>
         </div>
         <div class="flex gap-5">
-          <lucide-icon name="phone" size="16" class="text-muted-foreground"></lucide-icon>
-          <lucide-icon name="video" size="16" class="text-muted-foreground"></lucide-icon>
+          <lucide-icon
+            name="phone"
+            size="16"
+            class="text-muted-foreground cursor-pointer"
+          ></lucide-icon>
+          <lucide-icon
+            name="video"
+            size="16"
+            class="text-muted-foreground cursor-pointer"
+          ></lucide-icon>
           <lucide-icon
             name="ellipsis-vertical"
             size="16"
-            class="text-muted-foreground"
+            class="text-muted-foreground cursor-pointer"
           ></lucide-icon>
         </div>
       </div>
 
       <!-- Messages -->
-      <div class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-4">
-        @for (message of messages; track message.id) {
-          <div [class]="message.isSent ? 'flex justify-end' : 'flex justify-start'">
+      <div
+        #msgContainer
+        class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-4"
+        (scroll)="onScroll($event)"
+      >
+        <!-- Load more spinner -->
+        <div *ngIf="loadingMore" class="flex justify-center py-2">
+          <div
+            class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"
+          ></div>
+        </div>
+
+        <!-- Message skeletons -->
+        <ng-container *ngIf="loadingMsgs">
+          <div
+            *ngFor="let i of [1, 2, 3, 4, 5]"
+            class="flex animate-pulse"
+            [class]="i % 2 === 0 ? 'justify-end' : 'justify-start'"
+          >
+            <div class="h-8 rounded-xl bg-muted" [style.width]="((i * 37) % 120) + 80 + 'px'"></div>
+          </div>
+        </ng-container>
+
+        <!-- Messages -->
+        <div
+          *ngFor="let msg of msgs; trackBy: trackByMsg"
+          [class]="msg.senderId === auth.userId() ? 'flex justify-end' : 'flex justify-start'"
+        >
+          <div
+            class="flex flex-col gap-1 max-w-xs lg:max-w-md"
+            [class]="msg.senderId === auth.userId() ? 'items-end' : 'items-start'"
+          >
             <div
-              class="flex gap-2 items-end max-w-xs lg:max-w-md"
-              [class]="message.isSent ? 'flex-row-reverse' : ''"
+              class="px-4 py-2 text-xs leading-relaxed wrap-break-word"
+              [class]="
+                msg.senderId === auth.userId()
+                  ? 'bg-primary text-primary-foreground rounded-xl rounded-tr-sm'
+                  : 'bg-secondary text-secondary-foreground rounded-xl rounded-tl-sm'
+              "
             >
-              @if (!message.isSent) {
-                <img
-                  [src]="message.avatar"
-                  alt="{{ message.sender }}"
-                  class="w-8 h-8 rounded-full object-cover border border-border shrink-0"
-                />
-              }
-              <div
-                [class]="message.isSent ? 'items-end' : 'items-start'"
-                class="flex flex-col gap-1"
-              >
-                <div
-                  [class]="
-                    message.isSent
-                      ? 'bg-primary text-primary-foreground rounded-xl rounded-tr-sm'
-                      : 'bg-secondary text-secondary-foreground rounded-xl rounded-tl-sm'
-                  "
-                  class="px-4 py-2 text-xs leading-relaxed break-words"
-                >
-                  {{ message.content }}
-                </div>
-                <span class="text-[10px] text-muted-foreground px-2">{{ message.timestamp }}</span>
-              </div>
+              {{ msg.content }}
+            </div>
+            <div class="flex items-center gap-1 px-1">
+              <span class="text-[10px] text-muted-foreground">{{
+                msg.createdAt | date: 'shortTime'
+              }}</span>
+              <ng-container *ngIf="msg.senderId === auth.userId()">
+                <lucide-icon
+                  *ngIf="msg.status === 'sent'"
+                  name="check"
+                  size="10"
+                  class="text-muted-foreground"
+                ></lucide-icon>
+                <lucide-icon
+                  *ngIf="msg.status === 'delivered'"
+                  name="check-check"
+                  size="10"
+                  class="text-muted-foreground"
+                ></lucide-icon>
+                <lucide-icon
+                  *ngIf="msg.status === 'read'"
+                  name="check-check"
+                  size="10"
+                  class="text-primary"
+                ></lucide-icon>
+              </ng-container>
             </div>
           </div>
-        }
+        </div>
+
+        <div #msgEnd></div>
       </div>
 
-      <!-- Message Input -->
+      <!-- Input -->
       <div class="px-4 py-3 bg-card border-t border-border shrink-0">
         <div class="flex items-center gap-2">
-          <!-- Attach Button -->
-
           <lucide-icon
             name="paperclip"
             size="16"
             class="text-muted-foreground mr-2 cursor-pointer"
           ></lucide-icon>
-
           <lucide-icon
             name="image"
             size="16"
             class="text-muted-foreground mr-2 cursor-pointer"
           ></lucide-icon>
-
-          <!-- Input Field -->
-
           <div class="relative w-full">
-            <lucide-icon
-              name="smile"
-              size="16"
-              class="absolute right-1.5 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
-            ></lucide-icon>
+            <!-- Emoji Picker -->
+            <div
+              *ngIf="showEmojiPicker"
+              class="absolute bottom-12 right-0 z-50 shadow-xl rounded-xl overflow-hidden"
+            >
+              <emoji-picker (emoji-click)="onEmojiSelect($event)" class="light"></emoji-picker>
+            </div>
+
+            <button
+              type="button"
+              (click)="toggleEmoji()"
+              class="emoji-trigger cursor-pointer absolute right-1.5 top-1/2 transform -translate-y-1/2"
+            >
+              <lucide-icon name="smile" size="16" class="text-gray-400"></lucide-icon>
+            </button>
             <input
               type="text"
               placeholder="Type a message..."
-              class="w-full pl-4 pr-2 text-sm py-2 border bg-secondary border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
+              [formControl]="msgCtrl"
+              (keydown)="onEnter($event)"
+              (input)="onTyping()"
+              class="w-full pl-4 pr-8 text-sm py-2 border bg-secondary border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-
-          <!-- Send Button -->
           <button
+            (click)="sendMsg()"
             class="flex items-center justify-center cursor-pointer w-12 h-10 gradient-button rounded-lg"
           >
-            <lucide-icon
-              name="send"
-              size="16"
-              class="text-white"
-            ></lucide-icon>
+            <lucide-icon name="send" size="16" class="text-white"></lucide-icon>
           </button>
         </div>
       </div>
-    } @else {
-      <!-- Empty State -->
+    </ng-container>
+
+    <ng-template #emptyState>
       <div class="flex-1 flex flex-col items-center justify-center gap-6">
         <div
           class="w-20 h-20 flex items-center justify-center gradient-button rounded-2xl animate-bounce"
         >
           <lucide-icon name="message-circle" size="35" class="text-white"></lucide-icon>
         </div>
-        <h2 class="text-xl font-bold text-foreground">Welcome to <span class="gradient-text">TalkFlow</span></h2>
+        <h2 class="text-xl font-bold text-foreground">
+          Welcome to <span class="gradient-text">TalkFlow</span>
+        </h2>
         <p class="max-w-sm text-center text-sm text-foreground/60">
           Select a conversation from the list to start chatting, or search for new people to connect
           with.
         </p>
       </div>
-    }
+    </ng-template>
   </div>
 </div>

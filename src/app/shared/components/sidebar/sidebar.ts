@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared.module';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 interface NavItem {
   id: string;
@@ -54,7 +55,7 @@ export class Sidebar {
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, public auth: AuthService) {}
 
   ngOnInit(): void {}
 
@@ -62,10 +63,14 @@ export class Sidebar {
     return this.selectedItem === itemId;
   }
 
-  redirect(item: NavItem){
+  redirect(item: NavItem) {
     this.selectedItem = item.id;
     // Add navigation logic here if needed
     console.log(`Navigating to /${item.id}`);
     this.router.navigate([`/${item.id}`]);
+  }
+
+  logOut() {
+    this.router.navigate(['/auth/login']);
   }
 }

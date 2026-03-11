@@ -8,7 +8,7 @@
       <div class="flex items-start w-fit gap-4 mb-8 relative">
         <div class="flex animate-fade-in items-start gap-4ml-0">
           <div
-            class="w-20 h-20 gradient-button rounded-2xl flex items-center justify-center shadow-lg animate-scale-pulse"
+            class="w-20 h-20 popin gradient-button rounded-2xl flex items-center justify-center shadow-lg animate-scale-pulse"
           >
             <lucide-icon name="message-circle" size="40" class="text-white"></lucide-icon>
           </div>
@@ -93,6 +93,7 @@
             </div>
             <input
               formControlName="email"
+              autofocus="true"
               type="email"
               placeholder="Enter your email"
               class="w-full pl-10 pr-4 text-xs py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -145,8 +146,7 @@
           <div *ngIf="isSubmitted() && form['password'].errors">
             <p class="error" *ngIf="form['password'].errors['required']">Password is required.</p>
             <p class="error" *ngIf="form['password'].errors['pattern']">
-              Password must be at least 8 characters long and contain at least one uppercase letter,
-              one lowercase letter, one number, and one special character.
+              8 characters, uppercase, lowercase, number and a special character.
             </p>
           </div>
         </div>

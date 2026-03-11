@@ -8,16 +8,12 @@ export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  // Already checked → no extra API call
   if (auth.checked()) {
-    return auth.isLoggedIn()
-      ? true
-      : router.createUrlTree(['/login']);
+    return auth.isLoggedIn() ? true : router.createUrlTree(['/auth/login']); // ✅ fixed path
   }
 
-  // First load → ask backend
   return auth.checkAuth().pipe(
     map(() => true),
-    catchError(() => of(router.createUrlTree(['/login'])))
+    catchError(() => of(router.createUrlTree(['/auth/login']))), // ✅ fixed path
   );
 };

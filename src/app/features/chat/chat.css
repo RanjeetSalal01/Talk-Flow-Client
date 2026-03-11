@@ -12,3 +12,9 @@
     }
 }
 
+emoji-picker {
+  --num-columns: 8;
+  --emoji-size: 1.2rem;
+  height: 350px;
+  width: 320px;
+}
