@@ -1,0 +1,301 @@
+<ng-container *ngIf="callState && callState.status !== 'idle'">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
+    <!-- ── INCOMING CALL ── -->
+    <div
+      *ngIf="callState.status === 'incoming'"
+      class="relative w-80 rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-b from-gray-800 to-gray-950 flex flex-col items-center px-8 py-10 gap-6"
+    >
+      <!-- background blur circles -->
+      <div
+        class="absolute top-0 left-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl -translate-x-10 -translate-y-10"
+      ></div>
+      <div
+        class="absolute bottom-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl translate-x-10 translate-y-10"
+      ></div>
+
+      <!-- call type label -->
+      <span class="text-xs text-gray-400 tracking-widest uppercase">
+        Incoming {{ callState.callType === 'video' ? 'Video' : 'Voice' }} Call
+      </span>
+
+      <!-- avatar with pulse -->
+      <div class="relative flex items-center justify-center">
+        <div class="absolute w-28 h-28 rounded-full border-2 border-primary/40 animate-ping"></div>
+        <div class="absolute w-24 h-24 rounded-full border-2 border-primary/20 animate-pulse"></div>
+        <img
+          *ngIf="callState.remoteUserAvatar"
+          [src]="callState.remoteUserAvatar"
+          class="w-20 h-20 rounded-full object-cover border-4 border-primary/60 relative z-10"
+        />
+        <app-name-initials
+          [isCallModalOpened]="true"
+          *ngIf="!callState.remoteUserAvatar"
+          [name]="callState.remoteUserName!"
+          class="w-20 h-20 text-2xl relative z-10"
+        >
+        </app-name-initials>
+      </div>
+
+      <!-- name -->
+      <div class="text-center z-10">
+        <h3 class="text-xl font-bold text-white">{{ callState.remoteUserName }}</h3>
+      </div>
+
+      <!-- accept / reject -->
+      <div class="flex gap-12 mt-2 z-10">
+        <!-- reject -->
+        <div class="flex flex-col items-center gap-2">
+          <button
+            (click)="reject()"
+            class="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer transition shadow-lg shadow-red-500/30"
+          >
+            <lucide-icon name="phone-off" size="22" class="text-white"></lucide-icon>
+          </button>
+          <span class="text-[10px] text-gray-400">Decline</span>
+        </div>
+        <!-- accept -->
+        <div class="flex flex-col items-center gap-2">
+          <button
+            (click)="accept()"
+            class="w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 flex items-center justify-center cursor-pointer transition shadow-lg shadow-emerald-500/30"
+          >
+            <lucide-icon
+              [name]="callState.callType === 'video' ? 'video' : 'phone'"
+              size="22"
+              class="text-white"
+            ></lucide-icon>
+          </button>
+          <span class="text-[10px] text-gray-400">Accept</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CALLING (waiting) ── -->
+    <div
+      *ngIf="callState.status === 'calling'"
+      class="relative w-80 rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-b from-gray-800 to-gray-950 flex flex-col items-center px-8 py-10 gap-6"
+    >
+      <div
+        class="absolute top-0 left-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl -translate-x-10 -translate-y-10"
+      ></div>
+
+      <span class="text-xs text-gray-400 tracking-widest uppercase">
+        {{ callState.callType === 'video' ? 'Video' : 'Voice' }} Call
+      </span>
+
+      <!-- avatar -->
+      <div class="relative flex items-center justify-center">
+        <div class="absolute w-28 h-28 rounded-full border-2 border-primary/30 animate-pulse"></div>
+        <img
+          *ngIf="callState.remoteUserAvatar"
+          [src]="callState.remoteUserAvatar"
+          class="w-20 h-20 rounded-full object-cover border-4 border-primary/60 relative z-10"
+        />
+        <app-name-initials
+          [isCallModalOpened]="true"
+          *ngIf="!callState.remoteUserAvatar"
+          [name]="callState.remoteUserName!"
+          class="w-20 h-20 text-2xl relative z-10"
+        >
+        </app-name-initials>
+      </div>
+
+      <div class="text-center z-10">
+        <h3 class="text-xl font-bold text-white">{{ callState.remoteUserName }}</h3>
+        <div class="flex items-center justify-center gap-1 mt-2">
+          <span class="text-xs text-gray-400">Ringing</span>
+          <span
+            class="w-1 h-1 bg-gray-400 rounded-full animate-bounce"
+            style="animation-delay: 0s"
+          ></span>
+          <span
+            class="w-1 h-1 bg-gray-400 rounded-full animate-bounce"
+            style="animation-delay: 0.2s"
+          ></span>
+          <span
+            class="w-1 h-1 bg-gray-400 rounded-full animate-bounce"
+            style="animation-delay: 0.4s"
+          ></span>
+        </div>
+      </div>
+
+      <!-- end -->
+      <div class="flex flex-col items-center gap-2 z-10">
+        <button
+          (click)="end()"
+          class="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer transition shadow-lg shadow-red-500/30"
+        >
+          <lucide-icon name="phone-off" size="22" class="text-white"></lucide-icon>
+        </button>
+        <span class="text-[10px] text-gray-400">Cancel</span>
+      </div>
+    </div>
+
+    <!-- ── ACTIVE AUDIO CALL ── (WhatsApp style) -->
+    <div
+      *ngIf="callState.status === 'active' && callState.callType === 'audio'"
+      class="relative w-80 rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-b from-gray-800 to-gray-950 flex flex-col items-center px-8 py-10 gap-6"
+    >
+      <div
+        class="absolute top-0 left-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -translate-x-16 -translate-y-16"
+      ></div>
+      <div
+        class="absolute bottom-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-3xl translate-x-16 translate-y-16"
+      ></div>
+
+      <span class="text-xs text-emerald-400 tracking-widest uppercase z-10">Voice Call</span>
+
+      <!-- avatar with sound wave effect -->
+      <div class="relative flex items-center justify-center z-10">
+        <div
+          *ngIf="!isMuted"
+          class="absolute w-28 h-28 rounded-full border border-emerald-500/30 animate-ping"
+        ></div>
+        <img
+          *ngIf="callState.remoteUserAvatar"
+          [src]="callState.remoteUserAvatar"
+          class="w-20 h-20 rounded-full object-cover border-4 border-emerald-500/60"
+        />
+        <app-name-initials
+          [isCallModalOpened]="true"
+          *ngIf="!callState.remoteUserAvatar"
+          [name]="callState.remoteUserName!"
+          class="w-20 h-20 text-2xl"
+        >
+        </app-name-initials>
+      </div>
+
+      <div class="text-center z-10">
+        <h3 class="text-xl font-bold text-white">{{ callState.remoteUserName }}</h3>
+        <p class="text-sm text-emerald-400 font-mono mt-1">{{ formattedDuration }}</p>
+      </div>
+
+      <!-- hidden audio -->
+      <audio id="remoteVideo" autoplay></audio>
+
+      <!-- controls -->
+      <div class="flex items-center gap-8 z-10 mt-2">
+        <!-- mute -->
+        <div class="flex flex-col items-center gap-2">
+          <button
+            (click)="toggleMute()"
+            class="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition"
+            [class]="
+              isMuted ? 'bg-white text-gray-900' : 'bg-gray-700 text-white hover:bg-gray-600'
+            "
+          >
+            <lucide-icon [name]="isMuted ? 'mic-off' : 'mic'" size="18"></lucide-icon>
+          </button>
+          <span class="text-[10px] text-gray-400">{{ isMuted ? 'Unmute' : 'Mute' }}</span>
+        </div>
+
+        <!-- end -->
+        <div class="flex flex-col items-center gap-2">
+          <button
+            (click)="end()"
+            class="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer transition shadow-lg shadow-red-500/30"
+          >
+            <lucide-icon name="phone-off" size="24" class="text-white"></lucide-icon>
+          </button>
+          <span class="text-[10px] text-gray-400">End</span>
+        </div>
+
+        <!-- speaker placeholder -->
+        <div class="flex flex-col items-center gap-2">
+          <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center">
+            <lucide-icon name="volume-2" size="18" class="text-white"></lucide-icon>
+          </div>
+          <span class="text-[10px] text-gray-400">Speaker</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACTIVE VIDEO CALL ── (WhatsApp style) -->
+    <div
+      *ngIf="callState.status === 'active' && callState.callType === 'video'"
+      class="relative rounded-2xl overflow-hidden shadow-2xl bg-black w-200 h-125"
+    >
+      <!-- remote video fullscreen -->
+      <video id="remoteVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+
+      <!-- gradient overlay bottom -->
+      <div
+        class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/80 to-transparent"
+      ></div>
+
+      <!-- top bar — name + timer -->
+      <div class="absolute top-4 left-0 right-0 flex flex-col items-center gap-1 z-10">
+        <h3 class="font-semibold text-sm drop-shadow">{{ callState.remoteUserName }}</h3>
+        <span class="text-emerald-400 font-mono text-xs">{{ formattedDuration }}</span>
+      </div>
+
+      <!-- local video pip -->
+      <div
+        class="absolute top-4 right-4 w-24 h-32 rounded-xl overflow-hidden border-2 border-white/30 shadow-xl z-10"
+      >
+        <video
+          id="localVideo"
+          autoplay
+          playsinline
+          muted
+          class="w-full h-full object-cover"
+        ></video>
+        <!-- camera off placeholder -->
+        <div
+          *ngIf="isCameraOff"
+          class="absolute inset-0 bg-gray-900 flex items-center justify-center"
+        >
+          <lucide-icon name="video-off" size="20" class="text-gray-400"></lucide-icon>
+        </div>
+      </div>
+
+      <!-- bottom controls -->
+      <div class="absolute bottom-5 left-0 right-0 flex justify-center gap-6 z-10">
+        <!-- mute -->
+        <div class="flex flex-col items-center gap-1">
+          <button
+            (click)="toggleMute()"
+            class="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition"
+            [class]="
+              isMuted
+                ? 'bg-white text-gray-900'
+                : 'bg-black/50 text-white hover:bg-black/70 border border-white/20'
+            "
+          >
+            <lucide-icon [name]="isMuted ? 'mic-off' : 'mic'" size="18"></lucide-icon>
+          </button>
+          <span class="text-[9px] text-gray-300">{{ isMuted ? 'Unmute' : 'Mute' }}</span>
+        </div>
+
+        <!-- end -->
+        <div class="flex flex-col items-center gap-1">
+          <button
+            (click)="end()"
+            class="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer transition shadow-lg"
+          >
+            <lucide-icon name="phone-off" size="22" class="text-white"></lucide-icon>
+          </button>
+          <span class="text-[9px] text-gray-300">End</span>
+        </div>
+
+        <!-- camera -->
+        <div class="flex flex-col items-center gap-1">
+          <button
+            (click)="toggleCamera()"
+            class="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition"
+            [class]="
+              isCameraOff
+                ? 'bg-white text-gray-900'
+                : 'bg-black/50 text-white hover:bg-black/70 border border-white/20'
+            "
+          >
+            <lucide-icon [name]="isCameraOff ? 'video-off' : 'video'" size="18"></lucide-icon>
+          </button>
+          <span class="text-[9px] text-gray-300">{{
+            isCameraOff ? 'Start Video' : 'Stop Video'
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

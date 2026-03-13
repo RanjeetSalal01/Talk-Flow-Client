@@ -9,6 +9,7 @@ import { Component, Input } from '@angular/core';
 })
 export class NameInitials {
   @Input() name: string = '';
+  @Input() isCallModalOpened?: boolean = false;
   @Input() isOnline: any;
 
   getInitials(name: string): string {

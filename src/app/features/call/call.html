@@ -6,113 +6,71 @@
       <p class="text-xs text-muted-foreground mt-1">View your recent calls</p>
     </div>
 
+    <!-- Loading -->
+    <div *ngIf="loading" class="flex flex-col gap-y-4">
+      <div *ngFor="let i of [1,2,3]" class="h-16 bg-muted rounded-lg animate-pulse"></div>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading && calls.length === 0"
+         class="flex flex-col items-center justify-center py-20 text-muted-foreground">
+      <lucide-icon name="phone-off" size="40" class="mb-3 opacity-30"></lucide-icon>
+      <p class="text-sm">No call history yet</p>
+    </div>
+
     <!-- Call List -->
-    <div class="flex flex-col gap-y-4">
-      <!-- Call Item 1 - Sarah Wilson -->
+    <div *ngIf="!loading" class="flex flex-col gap-y-4">
       <div
+        *ngFor="let call of calls; trackBy: trackById"
         class="flex items-center justify-between p-4 bg-card hover:shadow-md duration-200 border rounded-lg transition"
       >
         <div class="flex items-center gap-4">
           <!-- Avatar -->
-          <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-            <span class="text-lg">👨‍💼</span>
-          </div>
+          <img
+            *ngIf="getRemoteUser(call).avatarUrl"
+            [src]="getRemoteUser(call).avatarUrl"
+            class="w-8 h-8 rounded-full object-cover"
+          />
+          <app-name-initials
+            *ngIf="!getRemoteUser(call).avatarUrl"
+            [name]="getRemoteUser(call).fullName"
+          ></app-name-initials>
+
           <!-- Call Info -->
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-semibold text-xs text-gray-900">Sarah Wilson</span>
-              <lucide-icon name="video" size="16" class="text-gray-400"></lucide-icon>
+              <span
+                class="font-semibold text-xs"
+                [class]="call.status === 'missed' || call.status === 'rejected' ? 'text-red-600' : 'text-gray-900'"
+              >{{ getRemoteUser(call).fullName }}</span>
+              <lucide-icon *ngIf="call.callType === 'video'" name="video" size="16" class="text-gray-400"></lucide-icon>
             </div>
             <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-0.5">
-              <lucide-icon name="phone-incoming" size="14" class="text-emerald-500"></lucide-icon>
-              <span>Today, 2:30 PM</span>
-              <span>•</span>
-              <lucide-icon name="clock" size="14"></lucide-icon>
-              <span>12:34</span>
+              <lucide-icon [name]="getCallIcon(call).icon" size="14" [class]="getCallIcon(call).color"></lucide-icon>
+              <span>{{ call.createdAt | date: 'MMM d, h:mm a' }}</span>
+              <ng-container *ngIf="call.duration">
+                <span>•</span>
+                <lucide-icon name="clock" size="14"></lucide-icon>
+                <span>{{ formatDuration(call.duration) }}</span>
+              </ng-container>
+              <ng-container *ngIf="!call.duration">
+                <span>•</span>
+                <span class="capitalize">{{ call.status }}</span>
+              </ng-container>
             </div>
           </div>
         </div>
+
         <!-- Action Button -->
-        <button class="p-2 hover:bg-gray-100 rounded-lg transition">
-          <lucide-icon name="video" size="16" class="text-gray-600 cursor-pointer"></lucide-icon>
-        </button>
-      </div>
-
-      <!-- Call Item 2 - Alex Thompson -->
-      <div
-        class="flex items-center justify-between p-4 bg-card hover:shadow-md duration-200 border rounded-lg transition"
-      >
-        <div class="flex items-center gap-4">
-          <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
-            <span class="text-lg">👩</span>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-xs text-gray-900">Alex Thompson</span>
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-0.5">
-              <lucide-icon name="phone-incoming" size="14" class="text-emerald-500"></lucide-icon>
-              <span>Today, 11:15 AM</span>
-              <span>•</span>
-              <lucide-icon name="clock" size="14"></lucide-icon>
-              <span>5:21</span>
-            </div>
-          </div>
-        </div>
-        <button class="p-2 hover:bg-gray-100 rounded-lg transition">
-          <lucide-icon name="phone" size="16" class="text-gray-600 cursor-pointer"></lucide-icon>
-        </button>
-      </div>
-
-      <!-- Call Item 3 - Emma Davis -->
-      <div
-        class="flex items-center justify-between p-4 bg-card hover:shadow-md duration-200 border rounded-lg transition"
-      >
-        <div class="flex items-center gap-4">
-          <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center">
-            <span class="text-lg">👩‍🦰</span>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-xs text-red-600">Emma Davis</span>
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-0.5">
-              <lucide-icon name="phone-missed" size="14" class="text-red-500"></lucide-icon>
-              <span>Yesterday, 8:45 PM</span>
-            </div>
-          </div>
-        </div>
-        <button class="p-2 hover:bg-gray-100 rounded-lg transition">
-          <lucide-icon name="phone" size="16" class="text-gray-600 cursor-pointer"></lucide-icon>
-        </button>
-      </div>
-
-      <!-- Call Item 4 - Mike Johnson -->
-      <div
-        class="flex items-center justify-between p-4 bg-card hover:shadow-md duration-200 border rounded-lg transition"
-      >
-        <div class="flex items-center gap-4">
-          <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-            <span class="text-lg">👨‍🦲</span>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-xs text-gray-900">Mike Johnson</span>
-              <lucide-icon name="video" size="16" class="text-gray-400"></lucide-icon>
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-0.5">
-              <lucide-icon name="phone-missed" size="14" class="text-red-500"></lucide-icon>
-              <span>Yesterday, 3:00 PM</span>
-              <span>•</span>
-              <lucide-icon name="clock" size="14"></lucide-icon>
-              <span>45:12</span>
-            </div>
-          </div>
-        </div>
-        <button class="p-2 hover:bg-gray-100 rounded-lg transition">
-          <lucide-icon name="video" size="16" class="text-gray-600 cursor-pointer"></lucide-icon>
+        <button (click)="callBack(call)" class="p-2 hover:bg-gray-100 rounded-lg transition">
+          <lucide-icon
+            [name]="call.callType === 'video' ? 'video' : 'phone'"
+            size="16"
+            class="text-gray-600 cursor-pointer"
+          ></lucide-icon>
         </button>
       </div>
     </div>
+
   </div>
 </div>

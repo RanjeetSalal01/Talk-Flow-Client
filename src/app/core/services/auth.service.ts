@@ -7,7 +7,7 @@ import { NotificationService } from './notifications';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private user = signal<any>(null);
+  user = signal<any>(null);
   checked = signal<boolean>(false);
   userId = signal<string | null>(null);
 

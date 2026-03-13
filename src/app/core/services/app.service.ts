@@ -46,4 +46,12 @@ export class AppService {
       })
       .pipe(catchError(this.handleError));
   }
+
+  uploadWithProgress<T>(url: string, body: FormData) {
+    return this.http.post<T>(`${API.domain}${url}`, body, {
+      reportProgress: true,
+      observe: 'events',
+      withCredentials: true,
+    });
+  }
 }

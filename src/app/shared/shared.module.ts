@@ -36,6 +36,13 @@ import {
   ChevronLeft,
   ArrowLeft,
   Inbox,
+  CheckCheck,
+  PhoneOff,
+  MicOff,
+  Mic,
+  VideoOff,
+  PhoneOutgoing,
+  Volume2,
 } from 'lucide-angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -79,7 +86,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
       Plus,
       ChevronLeft,
       ArrowLeft,
-      Inbox
+      Inbox,
+      CheckCheck,
+      PhoneOff,
+      MicOff,
+      Mic,
+      VideoOff,
+      PhoneOutgoing,
+      Volume2
     }),
   ],
   exports: [CommonModule, FormsModule, ReactiveFormsModule, LucideAngularModule],

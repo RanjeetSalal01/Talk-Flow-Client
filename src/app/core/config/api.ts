@@ -30,5 +30,12 @@ export const API = {
     // Message endpoints
     sendMessage: '/messages/sendMessage',
     getMessages: '/messages/getMessages',
+    uploadFile: '/messages/uploadFile',
+    getUnreadCount: '/messages/getUnreadCount',
+
+    // Calls endpoints
+    initiateCall: '/calls/initiate',
+    updateCallStatus: '/calls/status',
+    getCallHistory: '/calls/history',
   },
 };

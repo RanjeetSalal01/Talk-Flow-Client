@@ -13,6 +13,7 @@ import { API } from '../../core/config/api';
 import { Subject, EMPTY } from 'rxjs';
 import { takeUntil, catchError } from 'rxjs/operators';
 import { NameInitials } from '../../shared/components/name-initials/name-initials';
+import { BadgeService } from '../../core/services/badge.service';
 
 export interface FriendRequest {
   _id: string;
@@ -41,6 +42,7 @@ export class Request implements OnInit, OnDestroy {
     public app: AppService,
     private socket: SocketService,
     private cdr: ChangeDetectorRef,
+    private badge: BadgeService
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +60,7 @@ export class Request implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.incomingRequests = Array.isArray(res) ? res : (res.data ?? []);
+          this.badge.requestUnread.set(this.incomingRequests.length);
           this.loadingIncoming = false;
           this.cdr.detectChanges();
         },
@@ -96,6 +99,7 @@ export class Request implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.incomingRequests = this.incomingRequests.filter((r) => r._id !== req._id);
+        this.badge.requestUnread.set(this.incomingRequests.length);
         this.cdr.detectChanges();
       });
   }
@@ -113,6 +117,7 @@ export class Request implements OnInit, OnDestroy {
         } else {
           this.outgoingRequests = this.outgoingRequests.filter((r) => r._id !== req._id);
         }
+        this.badge.requestUnread.set(this.incomingRequests.length);
         this.cdr.detectChanges();
       });
   }

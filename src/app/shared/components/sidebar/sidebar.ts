@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared.module';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { BadgeService } from '../../../core/services/badge.service';
 
 interface NavItem {
   id: string;
@@ -55,7 +56,7 @@ export class Sidebar {
     },
   ];
 
-  constructor(private router: Router, public auth: AuthService) {}
+  constructor(private router: Router, public auth: AuthService, public badge: BadgeService) {}
 
   ngOnInit(): void {}
 
