@@ -1,7 +1,7 @@
-<div class="relative" [ngClass]="{ 'w-full h-full': isCallModalOpened }">
+<div class="relative" [ngClass]="{ 'w-full h-full': bigInitial }">
   <div
-    [ngClass]="{'w-full h-full': isCallModalOpened, 'w-10 h-10': !isCallModalOpened}"
-    class="rounded-full gradient-button flex items-center justify-center text-white text-sm font-bold shrink-0"
+    [ngClass]="{'w-full h-full text-lg': bigInitial, 'w-10 h-10 text-xs': !bigInitial}"
+    class="rounded-full gradient-button flex items-center justify-center text-white font-bold shrink-0"
   >
     {{ getInitials(name) }}
   </div>

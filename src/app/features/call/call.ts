@@ -16,7 +16,11 @@ import { NameInitials } from '../../shared/components/name-initials/name-initial
 })
 export class Call implements OnInit {
   calls: any[] = [];
-  loading = false;
+  loading: boolean = false;
+  loadingMore: boolean = false;
+  page: number = 1;
+  limit: number = 10;
+  hasMore = true;
 
   constructor(
     private app: AppService,
@@ -29,19 +33,36 @@ export class Call implements OnInit {
     this.loadHistory();
   }
 
-  loadHistory(): void {
-    this.loading = true;
-    this.app.get<any>(API.endPoint.getCallHistory).subscribe({
-      next: (res) => {
-        this.calls = Array.isArray(res) ? res : (res.data ?? []);
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-    });
+  loadHistory(append = false): void {
+    if (append) this.loadingMore = true;
+    else this.loading = true;
+    this.cdr.detectChanges();
+    this.app
+      .get<any>(`${API.endPoint.getCallHistory}?page=${this.page}&limit=${this.limit}`)
+      .subscribe({
+        next: (res) => {
+          const data = res.data ?? [];
+          this.calls = append ? [...this.calls, ...data] : data;
+          this.hasMore = res.hasMore; // ✅ from server
+          this.loading = false;
+          this.loadingMore = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.loading = false;
+          this.loadingMore = false;
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  onScroll(event: Event): void {
+    const el = event.target as HTMLElement;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
+    if (nearBottom && this.hasMore && !this.loadingMore && !this.loading) {
+      this.page++;
+      this.loadHistory(true);
+    }
   }
 
   // ✅ get the other person in the call

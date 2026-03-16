@@ -8,6 +8,7 @@
     <div class="space-y-4">
       <!-- Change Password -->
       <button
+        (click)="openChangePassword()"
         class="w-full flex cursor-pointer items-center justify-between bg-card border border-border rounded-lg p-4 hover:shadow-sm transition"
       >
         <div class="flex items-center gap-4">
@@ -23,7 +24,7 @@
       </button>
 
       <!-- Blocked Users -->
-      <button
+      <!-- <button
         class="w-full flex cursor-pointer items-center justify-between bg-card border border-border rounded-lg p-4 hover:shadow-sm transition"
       >
         <div class="flex items-center gap-4">
@@ -36,10 +37,10 @@
           </div>
         </div>
         <lucide-icon name="chevron-right" size="16" class="text-primary"></lucide-icon>
-      </button>
+      </button> -->
 
       <!-- Privacy & Security -->
-      <button
+      <!-- <button
         class="w-full flex cursor-pointer items-center justify-between bg-card border border-border rounded-lg p-4 hover:shadow-sm transition"
       >
         <div class="flex items-center gap-4">
@@ -54,10 +55,11 @@
           </div>
         </div>
         <lucide-icon name="chevron-right" size="16" class="text-primary"></lucide-icon>
-      </button>
+      </button> -->
 
       <!-- Logout -->
       <button
+        (click)="openLogoutModal()"
         class="w-full flex cursor-pointer items-center justify-between bg-card border border-destructive/16 rounded-lg p-4 hover:shadow-sm transition"
       >
         <div class="flex items-center gap-4">

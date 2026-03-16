@@ -1,5 +1,4 @@
 <div class="h-screen overflow-auto bg-background">
-  <!-- Header -->
   <div class="bg-card px-6 py-6 max-w-3xl mx-auto">
     <h1 class="text-xl font-bold text-foreground">Profile</h1>
     <p class="text-xs text-muted-foreground mt-1">Manage your public profile</p>
@@ -8,68 +7,113 @@
   <div class="max-w-3xl mx-auto px-6 pb-12">
     <div class="bg-card border border-border rounded-xl p-8">
       <div class="flex flex-col items-center">
+        <!-- Avatar -->
         <div
-          class="w-28 h-28 rounded-full ring-4 ring-primary/10 flex items-center justify-center mb-3"
+          class="w-28 h-28 rounded-full ring-4 ring-primary/10 flex items-center justify-center mb-3 relative"
+          [class.cursor-pointer]="isEditing"
+          (click)="onAvatarClick()"
         >
+          <!-- preview while editing -->
           <img
-            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop"
-            alt="avatar"
+            *ngIf="avatarPreview"
+            [src]="avatarPreview"
             class="w-24 h-24 rounded-full object-cover"
           />
-        </div>
-        <div class="text-xs text-muted-foreground mb-6">Click to change photo</div>
 
-        <div class="w-full space-y-5">
+          <!-- existing avatar -->
+          <img
+            *ngIf="!avatarPreview && auth.user()?.avatarUrl"
+            [src]="auth.user()?.avatarUrl"
+            class="w-24 h-24 rounded-full object-cover"
+          />
+
+          <!-- no avatar → name initials -->
+          <app-name-initials
+            [bigInitial]="true"
+            *ngIf="!avatarPreview && !auth.user()?.avatarUrl"
+            [name]="auth.user()?.fullName"
+            class="w-24 h-24 text-2xl"
+          ></app-name-initials>
+        </div>
+
+        <label for="avatarInput" class="text-xs cursor-pointer text-muted-foreground mb-6"
+          >Click to change photo</label
+        >
+        <input
+          id="avatarInput"
+          type="file"
+          accept="image/*"
+          class="hidden"
+          (change)="onFileSelected($event)"
+        />
+
+        <div class="w-full space-y-5" [formGroup]="form">
+          <!-- Username -->
           <div>
             <label class="text-xs text-muted-foreground block mb-2">Username</label>
-            <div class="bg-secondary rounded-lg px-4 py-3 text-sm text-foreground">@ johndoe</div>
+            <div class="bg-secondary rounded-lg px-4 py-3 text-sm text-foreground">
+              @ {{ auth.user()?.username }}
+            </div>
           </div>
 
+          <!-- Display Name -->
           <div>
             <label class="text-xs text-muted-foreground block mb-2">Display Name</label>
             <input
-              class="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground"
-              value="John Doe"
+              formControlName="fullName"
+              class="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
+          <!-- Bio -->
           <div>
             <label class="text-xs text-muted-foreground block mb-2">Bio</label>
+            <!-- show text when not editing -->
+            <div
+              *ngIf="!isEditing"
+              class="bg-secondary rounded-lg px-4 py-3 text-sm text-foreground"
+            >
+              {{ auth.user()?.bio || '-' }}
+            </div>
+            <!-- textarea when editing -->
             <textarea
-              class="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground"
+              *ngIf="isEditing"
+              formControlName="bio"
+              class="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20"
               rows="3"
-            >
-Full-stack developer | Open source enthusiast | Coffee lover ☕</textarea
-            >
+            ></textarea>
           </div>
 
-          <div class="flex items-center justify-between bg-secondary rounded-lg px-4 py-4">
-            <div class="flex items-center gap-3">
-              <lucide-icon name="globe" size="18" class="text-muted-foreground"></lucide-icon>
-              <div>
-                <div class="font-semibold text-sm text-foreground">Show online status</div>
-                <div class="text-xs text-muted-foreground">Let others see when you're online</div>
-              </div>
-            </div>
-            <div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" class="sr-only peer" checked />
-                <div
-                  class="w-11 h-6 bg-muted rounded-full peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20"
-                ></div>
-                <div
-                  class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform"
-                ></div>
-              </label>
-            </div>
-          </div>
-
-          <div class="flex justify-end">
+          <!-- Actions -->
+          <div class="flex justify-end gap-3">
             <button
+              *ngIf="isEditing"
+              (click)="cancel()"
+              class="text-xs px-5 py-3 cursor-pointer rounded-lg border border-border text-muted-foreground hover:bg-muted transition"
+            >
+              Cancel
+            </button>
+            <button
+              *ngIf="!isEditing"
+              (click)="edit()"
               class="gradient-button text-xs flex items-center gap-2 px-5 py-3 cursor-pointer rounded-lg text-white"
             >
               <lucide-icon name="edit" size="16" class="text-white"></lucide-icon>
               Edit Profile
+            </button>
+            <button
+              *ngIf="isEditing"
+              (click)="save()"
+              [disabled]="saving"
+              class="gradient-button text-xs flex items-center gap-2 px-5 py-3 cursor-pointer rounded-lg text-white disabled:opacity-60"
+            >
+              <lucide-icon
+                [name]="saving ? 'loader' : 'save'"
+                size="16"
+                class="text-white"
+                [class.animate-spin]="saving"
+              ></lucide-icon>
+              {{ saving ? 'Saving...' : 'Save' }}
             </button>
           </div>
         </div>

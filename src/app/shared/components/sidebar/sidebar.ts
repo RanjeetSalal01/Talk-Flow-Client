@@ -4,6 +4,12 @@ import { SharedModule } from '../../shared.module';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { BadgeService } from '../../../core/services/badge.service';
+import { NameInitials } from '../name-initials/name-initials';
+import { MatDialog } from '@angular/material/dialog';
+import { SocketService } from '../../../core/services/socket.service';
+import { API } from '../../../core/config/api';
+import { AppService } from '../../../core/services/app.service';
+import { Logout } from '../logout/logout';
 
 interface NavItem {
   id: string;
@@ -14,7 +20,7 @@ interface NavItem {
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, NameInitials],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
@@ -56,7 +62,14 @@ export class Sidebar {
     },
   ];
 
-  constructor(private router: Router, public auth: AuthService, public badge: BadgeService) {}
+  constructor(
+    private router: Router,
+    private app: AppService,
+    private socket: SocketService,
+    public auth: AuthService,
+    public badge: BadgeService,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {}
 
@@ -71,7 +84,30 @@ export class Sidebar {
     this.router.navigate([`/${item.id}`]);
   }
 
-  logOut() {
-    this.router.navigate(['/auth/login']);
+  openLogoutModal(): void {
+    const ref = this.dialog.open(Logout, {
+      width: '320px',
+      borderRadius: '16px',
+      panelClass: 'rounded-2xl',
+    } as any);
+
+    ref.afterClosed().subscribe((confirmed) => {
+      if (confirmed) this.logOut();
+    });
+  }
+
+  logOut(): void {
+    this.app.post(API.endPoint.logout, {}).subscribe({
+      next: () => {
+        this.auth.user.set(null);
+        this.socket.disconnect();
+        this.router.navigate(['/auth/login']);
+      },
+      error: () => {
+        this.auth.user.set(null);
+        this.socket.disconnect();
+        this.router.navigate(['/auth/login']);
+      },
+    });
   }
 }

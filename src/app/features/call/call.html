@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-background">
+<div class="min-h-screen bg-background h-screen overflow-y-auto" (scroll)="onScroll($event)">
   <div class="w-full px-6 py-6">
     <!-- Header -->
     <div class="mb-8">
@@ -8,12 +8,14 @@
 
     <!-- Loading -->
     <div *ngIf="loading" class="flex flex-col gap-y-4">
-      <div *ngFor="let i of [1,2,3]" class="h-16 bg-muted rounded-lg animate-pulse"></div>
+      <div *ngFor="let i of [1, 2, 3]" class="h-16 bg-muted rounded-lg animate-pulse"></div>
     </div>
 
     <!-- Empty -->
-    <div *ngIf="!loading && calls.length === 0"
-         class="flex flex-col items-center justify-center py-20 text-muted-foreground">
+    <div
+      *ngIf="!loading && calls.length === 0"
+      class="flex flex-col items-center justify-center py-20 text-muted-foreground"
+    >
       <lucide-icon name="phone-off" size="40" class="mb-3 opacity-30"></lucide-icon>
       <p class="text-sm">No call history yet</p>
     </div>
@@ -41,12 +43,26 @@
             <div class="flex items-center gap-2">
               <span
                 class="font-semibold text-xs"
-                [class]="call.status === 'missed' || call.status === 'rejected' ? 'text-red-600' : 'text-gray-900'"
-              >{{ getRemoteUser(call).fullName }}</span>
-              <lucide-icon *ngIf="call.callType === 'video'" name="video" size="16" class="text-gray-400"></lucide-icon>
+                [class]="
+                  call.status === 'missed' || call.status === 'rejected'
+                    ? 'text-red-600'
+                    : 'text-gray-900'
+                "
+                >{{ getRemoteUser(call).fullName }}</span
+              >
+              <lucide-icon
+                *ngIf="call.callType === 'video'"
+                name="video"
+                size="16"
+                class="text-gray-400"
+              ></lucide-icon>
             </div>
             <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-0.5">
-              <lucide-icon [name]="getCallIcon(call).icon" size="14" [class]="getCallIcon(call).color"></lucide-icon>
+              <lucide-icon
+                [name]="getCallIcon(call).icon"
+                size="14"
+                [class]="getCallIcon(call).color"
+              ></lucide-icon>
               <span>{{ call.createdAt | date: 'MMM d, h:mm a' }}</span>
               <ng-container *ngIf="call.duration">
                 <span>•</span>
@@ -70,7 +86,21 @@
           ></lucide-icon>
         </button>
       </div>
-    </div>
 
+      <!-- ✅ load more spinner -->
+      <div *ngIf="loadingMore" class="flex justify-center py-4">
+        <div
+          class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"
+        ></div>
+      </div>
+
+      <!-- ✅ end of list -->
+      <div
+        *ngIf="!hasMore && calls.length > 0"
+        class="text-center text-[10px] text-muted-foreground py-4"
+      >
+        No more calls to load
+      </div>
+    </div>
   </div>
 </div>

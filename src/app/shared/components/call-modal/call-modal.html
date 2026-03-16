@@ -28,7 +28,7 @@
           class="w-20 h-20 rounded-full object-cover border-4 border-primary/60 relative z-10"
         />
         <app-name-initials
-          [isCallModalOpened]="true"
+          [bigInitial]="true"
           *ngIf="!callState.remoteUserAvatar"
           [name]="callState.remoteUserName!"
           class="w-20 h-20 text-2xl relative z-10"
@@ -92,7 +92,7 @@
           class="w-20 h-20 rounded-full object-cover border-4 border-primary/60 relative z-10"
         />
         <app-name-initials
-          [isCallModalOpened]="true"
+          [bigInitial]="true"
           *ngIf="!callState.remoteUserAvatar"
           [name]="callState.remoteUserName!"
           class="w-20 h-20 text-2xl relative z-10"
@@ -157,7 +157,7 @@
           class="w-20 h-20 rounded-full object-cover border-4 border-emerald-500/60"
         />
         <app-name-initials
-          [isCallModalOpened]="true"
+          [bigInitial]="true"
           *ngIf="!callState.remoteUserAvatar"
           [name]="callState.remoteUserName!"
           class="w-20 h-20 text-2xl"

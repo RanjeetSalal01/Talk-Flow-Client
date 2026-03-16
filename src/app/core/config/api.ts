@@ -14,6 +14,7 @@ export const API = {
     getUsers: '/user/getUsers',
     updateUser: '/user/updateUser',
     searchUser: '/user/searchUser',
+    changePassword: '/user/changePassword',
 
     // Chat/Conversation endpoints
     createConversation: '/conversations/createConversation',

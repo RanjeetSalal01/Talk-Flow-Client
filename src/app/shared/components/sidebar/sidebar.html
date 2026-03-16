@@ -59,14 +59,18 @@
     <div class="bg-white rounded-lg border p-1">
       <div class="flex items-center gap-3 px-2 py-1 cursor-pointer group">
         <!-- Avatar -->
-        <div
-          class="w-10 h-10 bg-linear-to-br from-orange-400 to-pink-500 rounded-full flex-shrink-0 flex items-center justify-center shadow-md"
-        >
-          <span class="text-white font-bold text-sm">JD</span>
-        </div>
+        <img
+          *ngIf="auth.user().avatarUrl"
+          [src]="auth.user().avatarUrl"
+          class="w-8 h-8 rounded-full object-cover"
+        />
+        <app-name-initials
+          *ngIf="!auth.user().avatarUrl"
+          [name]="auth.user().fullName"
+        ></app-name-initials>
         <!-- User Info -->
         <div class="flex-1 min-w-0">
-          <p class="text-gray-900 font-semibold text-xs truncate"></p>
+          <p class="text-gray-900 font-semibold text-xs truncate">{{ auth.user().fullName }}</p>
           <p class="text-gray-500 text-[10px] flex items-center gap-1">
             <span class="w-2 h-2 bg-green-500 rounded-full"></span>
             Online
@@ -74,7 +78,7 @@
         </div>
         <!-- Logout Options -->
         <button
-          (click)="logOut()"
+          (click)="openLogoutModal()"
           class="text-gray-400 cursor-pointer transition-all duration-200 hover:text-cyan-500 hover:rotate-12"
         >
           <lucide-icon name="log-out" size="18"></lucide-icon>

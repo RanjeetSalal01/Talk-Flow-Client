@@ -43,6 +43,11 @@ import {
   VideoOff,
   PhoneOutgoing,
   Volume2,
+  Save,
+  Loader,
+  Moon,
+  Sun,
+  EyeOff,
 } from 'lucide-angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -93,7 +98,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
       Mic,
       VideoOff,
       PhoneOutgoing,
-      Volume2
+      Volume2,
+      Save,
+      Loader,
+      Moon,
+      Sun,
+      EyeOff
     }),
   ],
   exports: [CommonModule, FormsModule, ReactiveFormsModule, LucideAngularModule],
