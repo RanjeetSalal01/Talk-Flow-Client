@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://talk-flow-server.vercel.app//api',
-  socketUrl: 'https://talk-flow-server.vercel.app/',
+  apiBaseUrl: 'https://talk-flow-server.onrender.com/api',
+  socketUrl: 'https://talk-flow-server.onrender.com',
 };
