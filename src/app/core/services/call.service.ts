@@ -37,15 +37,28 @@ export class CallService {
   // Just to confirm TURN fixes your issue
   private iceConfig = {
     iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
       {
-        urls: [
-          'turn:openrelay.metered.ca:80',
-          'turn:openrelay.metered.ca:443',
-          'turn:openrelay.metered.ca:443?transport=tcp',
-        ],
-        username: 'openrelayproject',
-        credential: 'openrelayproject',
+        urls: 'stun:stun.relay.metered.ca:80',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:80',
+        username: '7bb10da9db0d4858f3fc083e',
+        credential: 'aTat0SbKv19/fJGz',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+        username: '7bb10da9db0d4858f3fc083e',
+        credential: 'aTat0SbKv19/fJGz',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:443',
+        username: '7bb10da9db0d4858f3fc083e',
+        credential: 'aTat0SbKv19/fJGz',
+      },
+      {
+        urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+        username: '7bb10da9db0d4858f3fc083e',
+        credential: 'aTat0SbKv19/fJGz',
       },
     ],
   };
