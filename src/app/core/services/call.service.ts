@@ -70,6 +70,10 @@ export class CallService {
     // ✅ callee answered
     this.socket.on<any>('callAnswer').subscribe(async ({ answer }) => {
       await this.pc?.setRemoteDescription(new RTCSessionDescription(answer));
+      // ✅ ADD THESE
+      this.stopRing(); // stop ringtone on caller
+      clearTimeout(this.callTimeout); // clear 30s timeout
+      this.state.next({ ...this.state.value, status: 'active' }); // update caller UI
     });
 
     // ✅ ice candidate
