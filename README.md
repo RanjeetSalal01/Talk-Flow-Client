@@ -1,114 +1,171 @@
-# Client
+# 💬 TalkFlow
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+> **Your conversations, beautifully simple.**
 
-## Development server
+TalkFlow is a full-stack real-time messaging and calling application built for seamless communication. Connect with friends, send instant messages, share media, and make crystal-clear voice calls — all in one clean, intuitive interface.
 
-To start a local development server, run:
+🌐 **Live App:** [talk-flow-client.vercel.app](https://talk-flow-client.vercel.app)
 
-```bash
-ng serve
-```
+---
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## ✨ Features
 
-## Code scaffolding
+### 💬 Real-Time Messaging
+- Instant messaging powered by **WebSockets**
+- **Typing indicators** — see when the other person is typing
+- **Seen / Unseen read receipts** — know when your message has been read
+- Message timestamps and conversation previews
+- Search conversations easily
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 📞 Voice & Video Calling
+- **HD voice and video calls** using **WebRTC**
+- Full **call history** with date, time, and duration
+- One-click callback from call history
 
-```bash
-ng generate component component-name
-```
+### 🖼️ Media Sharing
+- Share images and files directly in chat
+- In-chat media preview
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 👥 Friend System
+- Send and receive **friend requests in real-time**
+- Accept or decline incoming requests via the **Requests** tab
+- Real-time notification when someone sends you a request
 
-```bash
-ng generate --help
-```
+### 🔍 Find People
+- Search for users by username
+- View user bios and online status
+- Send friend requests directly from search results
 
-## Building
+### 👤 Profile Management
+- Customizable display name and username
+- Personal bio / status
+- Avatar support
+- Edit profile anytime
 
-To build the project run:
+### 🟢 Presence System
+- Live **online / offline** status indicators
+- Status updates in real-time across all connected clients
 
-```bash
-ng build
-```
+### ⚙️ Settings
+- Change password securely
+- Logout with confirmation dialog
+- Clean account management
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### 🔐 Authentication
+- Secure sign-in with email and password
+- Account registration for new users
+- Session / JWT management
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 🛠️ Tech Stack
 
-```bash
-ng test
-```
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React.js |
+| Real-time | WebSockets |
+| Calling | WebRTC |
+| Deployment | Vercel |
+| Auth | JWT / Session-based |
+| Styling | Custom CSS (UI designed with Lovable) |
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🚀 Getting Started
 
-```bash
-ng e2e
-```
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-## Configuration
-
-This app uses standard Angular environment files located in `src/environments`. Values such as `apiBaseUrl`, `socketUrl`, and `waApiUrl` are defined there:
-
-```ts
-export const environment = {
-  production: false,
-  apiBaseUrl: 'http://localhost:3000/api',
-  socketUrl: 'http://localhost:3000',
-  waApiUrl: 'http://localhost:8040',
-};
-```
-
-A `fileReplacements` entry in `angular.json` swaps in `environment.prod.ts` during production builds. This is the only place you need to change to switch between dev/prod environments.
-
-### API endpoints
-
-A small configuration object lives at `src/app/core/config/api.ts`. It follows this pattern:
-
-```ts
-export const API = {
-  domain: environment.apiBaseUrl, // defined in environment files
-  endPoint: {
-    login: '/auth/login',
-    logout: '/auth/logout',
-    // add only the paths you actually need
-  },
-};
-```
-
-Keep the full hostname (`domain`) in your environment files (`environment.ts`/`environment.prod.ts`) so the code can switch easily between dev and prod. You can likewise define `WA_API` or other service domains the same way.
-
-Services use `AppService` (a centralized HTTP wrapper) for GET/POST/PUT/DELETE calls, passing only the endpoint path.
-
-### Socket support
-
-A basic `SocketService` that wraps `socket.io-client` lives under `src/app/core/services`. Install the client package before using it:
+### Installation
 
 ```bash
-npm install socket.io-client
+# Clone the repository
+git clone https://github.com/your-username/talkflow.git
+
+# Navigate to the project directory
+cd talkflow
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
 ```
 
-### AppService
+### Environment Variables
 
-All HTTP requests go through `AppService` in `src/app/core/services/app.service.ts`. It provides:
+Create a `.env` file in the root directory:
 
-- `get<T>(path, params?, options?)` – GET request
-- `post<T>(path, body?, options?)` – POST request
-- `put<T>(path, body?, options?)` – PUT request
-- `delete<T>(path, params?, options?)` – DELETE request
+```env
+VITE_API_URL=your_backend_api_url
+VITE_SOCKET_URL=your_websocket_url
+```
 
-Each method automatically prepends the configured API base URL and handles errors.
+---
 
+## 📁 Project Structure
 
+```
+talkflow/
+├── src/
+│   ├── pages/
+│   │   ├── Chats.jsx         # Chat list & real-time messaging
+│   │   ├── Search.jsx        # Find people
+│   │   ├── Requests.jsx      # Friend requests (real-time)
+│   │   ├── Calls.jsx         # Call history
+│   │   ├── Profile.jsx       # User profile
+│   │   └── Settings.jsx      # App settings
+│   ├── components/
+│   │   ├── Sidebar.jsx       # Navigation sidebar
+│   │   ├── ChatWindow.jsx    # Messaging UI + typing indicator
+│   │   ├── CallUI.jsx        # WebRTC call interface
+│   │   └── ...
+│   ├── hooks/
+│   │   ├── useSocket.js      # WebSocket connection
+│   │   ├── useWebRTC.js      # WebRTC calling logic
+│   │   └── ...
+│   └── App.jsx
+├── public/
+└── package.json
+```
+
+---
+
+## 🔧 Key Technical Implementations
+
+- **WebSocket integration** for real-time messaging, typing indicators, read receipts, online presence, and friend requests — all running simultaneously
+- **WebRTC peer-to-peer calling** for voice and video with signaling handled over WebSockets
+- **Media sharing pipeline** for in-chat file and image transfers
+- **JWT-based authentication** with protected routes
+- **Real-time friend request system** with instant UI updates across clients
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Rahul Sharma**
+- Username: `@rahul_sharma_7332`
+- Built with ❤️ and ☕
+
+---
+
+*TalkFlow — Connect with friends and family through seamless messaging and crystal-clear calls.*
