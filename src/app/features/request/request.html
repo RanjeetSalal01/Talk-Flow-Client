@@ -1,20 +1,20 @@
 <div class="min-h-screen bg-background">
   <!-- Header -->
-  <div class="bg-card px-6 py-6">
-    <h1 class="text-xl font-bold text-foreground">Chat Requests</h1>
+  <div class="bg-card px-4 md:px-6 py-4 md:py-6">
+    <h1 class="text-lg md:text-xl font-bold text-foreground">Chat Requests</h1>
     <p class="text-xs text-muted-foreground mt-1">Accept requests to start chatting</p>
   </div>
 
-  <div class="w-full px-6 pb-8 py-2">
+  <div class="w-full px-4 md:px-6 pb-8 py-2">
     <!-- Tabs -->
-    <div class="mb-8">
+    <div class="mb-6 md:mb-8">
       <div class="inline-flex w-full bg-secondary/30 rounded-lg p-1.5">
         <button
           (click)="setActiveTab('incoming')"
           [class]="
             activeTab === 'incoming' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
           "
-          class="flex-1 py-2 cursor-pointer px-4 rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2 hover:text-foreground text-xs"
+          class="flex-1 py-2 cursor-pointer px-3 md:px-4 rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2 hover:text-foreground text-xs"
         >
           Incoming
           <span
@@ -29,7 +29,7 @@
           [class]="
             activeTab === 'outgoing' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
           "
-          class="flex-1 py-2 cursor-pointer px-4 rounded-lg text-xs transition-all duration-200 font-medium flex items-center justify-center gap-2 hover:text-foreground"
+          class="flex-1 py-2 cursor-pointer px-3 md:px-4 rounded-lg text-xs transition-all duration-200 font-medium flex items-center justify-center gap-2 hover:text-foreground"
         >
           Outgoing
           <span
@@ -46,10 +46,10 @@
     <ng-template #skeletonList>
       <div
         *ngFor="let i of [1, 2, 3]"
-        class="bg-card border border-border rounded-lg p-5 mb-4 animate-pulse"
+        class="bg-card border border-border rounded-lg p-4 md:p-5 mb-4 animate-pulse"
       >
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-muted shrink-0"></div>
+        <div class="flex items-center gap-3 md:gap-4">
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-muted shrink-0"></div>
           <div class="flex-1 space-y-2">
             <div class="h-3 bg-muted rounded w-1/3"></div>
             <div class="h-2 bg-muted rounded w-1/2"></div>
@@ -64,7 +64,7 @@
     </ng-template>
 
     <!-- Incoming -->
-    <div *ngIf="activeTab === 'incoming'" class="space-y-4">
+    <div *ngIf="activeTab === 'incoming'" class="space-y-3 md:space-y-4">
       <ng-container *ngIf="loadingIncoming; else incomingContent">
         <ng-container *ngTemplateOutlet="skeletonList"></ng-container>
       </ng-container>
@@ -81,23 +81,27 @@
 
         <div
           *ngFor="let req of incomingRequests; trackBy: trackById"
-          class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
+          class="bg-card border border-border rounded-lg p-4 md:p-5 hover:shadow-md transition-all duration-200"
         >
-          <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center gap-4 flex-1">
+          <div class="flex items-center justify-between gap-3 md:gap-4">
+            <div class="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
               <ng-container *ngIf="req.senderId.avatarUrl; else incomingInitials">
                 <img
                   [src]="req.senderId.avatarUrl"
                   [alt]="req.senderId.username"
-                  class="w-12 h-12 rounded-full object-cover border-2 border-border shrink-0"
+                  class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-border shrink-0"
                 />
               </ng-container>
               <ng-template #incomingInitials>
                 <app-name-initials [name]="req.senderId.fullName"></app-name-initials>
               </ng-template>
-              <div class="flex-1">
-                <h4 class="font-semibold text-foreground text-xs">{{ req.senderId.username }}</h4>
-                <p class="text-[10px] text-muted-foreground">{{ req.senderId.bio || 'No bio' }}</p>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-foreground text-xs truncate">
+                  {{ req.senderId.username }}
+                </h4>
+                <p class="text-[10px] text-muted-foreground truncate">
+                  {{ req.senderId.bio || 'No bio' }}
+                </p>
                 <p class="text-[10px] text-muted-foreground mt-0.5">
                   {{ req.createdAt | date: 'mediumDate' }}
                 </p>
@@ -123,7 +127,7 @@
     </div>
 
     <!-- Outgoing -->
-    <div *ngIf="activeTab === 'outgoing'" class="space-y-4">
+    <div *ngIf="activeTab === 'outgoing'" class="space-y-3 md:space-y-4">
       <ng-container *ngIf="loadingOutgoing; else outgoingContent">
         <ng-container *ngTemplateOutlet="skeletonList"></ng-container>
       </ng-container>
@@ -140,23 +144,25 @@
 
         <div
           *ngFor="let req of outgoingRequests; trackBy: trackById"
-          class="bg-card border border-border rounded-lg p-5 hover:shadow-md transition-all duration-200"
+          class="bg-card border border-border rounded-lg p-4 md:p-5 hover:shadow-md transition-all duration-200"
         >
-          <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center gap-4 flex-1">
+          <div class="flex items-center justify-between gap-3 md:gap-4">
+            <div class="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
               <ng-container *ngIf="req.receiverId.avatarUrl; else outgoingInitials">
                 <img
                   [src]="req.receiverId.avatarUrl"
                   [alt]="req.receiverId.username"
-                  class="w-12 h-12 rounded-full object-cover border-2 border-border shrink-0"
+                  class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-border shrink-0"
                 />
               </ng-container>
               <ng-template #outgoingInitials>
                 <app-name-initials [name]="req.receiverId.fullName"></app-name-initials>
               </ng-template>
-              <div class="flex-1">
-                <h4 class="font-semibold text-foreground text-xs">{{ req.receiverId.username }}</h4>
-                <p class="text-[10px] text-muted-foreground">
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-foreground text-xs truncate">
+                  {{ req.receiverId.username }}
+                </h4>
+                <p class="text-[10px] text-muted-foreground truncate">
                   {{ req.receiverId.bio || 'No bio' }}
                 </p>
                 <p class="text-[10px] text-muted-foreground mt-0.5">
@@ -166,15 +172,16 @@
             </div>
             <div class="flex items-center gap-2 shrink-0">
               <span
-                class="px-3 py-1 rounded-full text-[10px] font-medium bg-warning/10 text-warning"
-                >Pending</span
+                class="hidden sm:inline px-3 py-1 rounded-full text-[10px] font-medium bg-warning/10 text-warning"
               >
-              <button
+                Pending
+              </span>
+              <!-- <button
                 (click)="rejectRequest(req)"
                 class="flex items-center cursor-pointer justify-center w-8 h-8 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all duration-200"
               >
                 <lucide-icon name="x" size="16" class="text-red-600"></lucide-icon>
-              </button>
+              </button> -->
             </div>
           </div>
         </div>

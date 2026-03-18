@@ -42,7 +42,7 @@ export class Request implements OnInit, OnDestroy {
     public app: AppService,
     private socket: SocketService,
     private cdr: ChangeDetectorRef,
-    private badge: BadgeService
+    private badge: BadgeService,
   ) {}
 
   ngOnInit(): void {
@@ -123,11 +123,35 @@ export class Request implements OnInit, OnDestroy {
   }
 
   private listenToSocket(): void {
+    // incoming new request
     this.socket
       .on<FriendRequest>('friendRequest')
       .pipe(takeUntil(this.destroy$))
       .subscribe((req) => {
         this.incomingRequests = [req, ...this.incomingRequests];
+        this.badge.requestUnread.set(this.incomingRequests.length);
+        this.cdr.detectChanges();
+      });
+
+    // ✅ someone accepted YOUR outgoing request → remove from outgoing list
+    this.socket
+      .on<any>('friendRequestAccepted')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.outgoingRequests = this.outgoingRequests.filter(
+          (r) => r.receiverId._id !== res.receiverId._id,
+        );
+        this.cdr.detectChanges();
+      });
+
+    // ✅ someone rejected YOUR outgoing request → remove from outgoing list
+    this.socket
+      .on<any>('friendRequestRejected')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.outgoingRequests = this.outgoingRequests.filter(
+          (r) => r.receiverId._id !== res.receiverId._id,
+        );
         this.cdr.detectChanges();
       });
   }

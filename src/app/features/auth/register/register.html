@@ -1,16 +1,20 @@
 <div
-  class="bg-linear-to-br from-primary/5 via-white to-primary/5 min-h-screen flex items-center justify-center p-4 py-12"
+  class="bg-linear-to-br from-primary/5 via-white to-primary/5 min-h-screen flex items-center justify-center p-4 py-8 lg:py-12"
 >
-  <div class="w-full max-w-6xl flex items-center justify-between gap-64">
+  <div
+    class="w-full max-w-6xl flex flex-col-reverse lg:flex-row items-center justify-between gap-8 lg:gap-64"
+  >
     <!-- Left Section - Sign Up Card -->
     <form
       [formGroup]="registerForm"
       (ngSubmit)="handleSubmit()"
-      class="w-full max-w-md animate-slide-up"
+      class="w-full max-w-full md:max-w-lg lg:max-w-md animate-slide-up"
     >
-      <div class="bg-white rounded-3xl shadow-2xl p-10">
-        <h2 class="text-xl font-bold text-gray-800 mb-2 text-center">Create Account</h2>
-        <p class="text-gray-500 mb-8 text-sm text-center">Join TalkFlow and start connecting</p>
+      <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10">
+        <h2 class="text-lg lg:text-xl font-bold text-gray-800 mb-2 text-center">Create Account</h2>
+        <p class="text-gray-500 mb-6 lg:mb-8 text-sm text-center">
+          Join TalkFlow and start connecting
+        </p>
 
         <!-- UserName Input -->
         <div class="mb-5">
@@ -31,7 +35,7 @@
             <p class="error" *ngIf="form['username'].errors['required']">User name is required.</p>
           </div>
         </div>
-        
+
         <!-- Full Name Input -->
         <div class="mb-5">
           <label class="block text-gray-700 text-xs font-medium mb-2">Full Name</label>
@@ -113,7 +117,7 @@
           </div>
         </div>
 
-        <!-- Confirm password Input -->
+        <!-- Confirm Password Input -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-2">
             <label class="block text-gray-700 text-xs font-medium">Confirm Password</label>
@@ -155,7 +159,7 @@
           </div>
         </div>
 
-        <!-- Sign In Button -->
+        <!-- Create Account Button -->
         <button
           class="w-full gradient-button cursor-pointer text-sm text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 mb-6"
         >
@@ -170,7 +174,7 @@
           </svg>
         </button>
 
-        <!-- Sign Up Link -->
+        <!-- Sign In Link -->
         <p class="text-center text-gray-600 text-[12.5px]">
           Already have an account?
           <a
@@ -183,26 +187,28 @@
     </form>
 
     <!-- Right Section -->
-    <div class="flex-1 relative flex flex-col animate-slide-in-left">
+    <div
+      class="flex-1 relative flex flex-col items-center text-center lg:items-start lg:text-left animate-slide-in-left w-full"
+    >
       <!-- Logo Icons -->
-      <div class="flex items-start gap-4 mb-8 relative">
+      <div class="flex items-start gap-4 mb-6 lg:mb-8 relative">
         <div class="flex animate-fade-in items-start gap-4ml-0">
           <div
-            class="w-20 h-20 popin gradient-button rounded-2xl flex items-center justify-center shadow-lg animate-scale-pulse"
+            class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 popin gradient-button rounded-2xl flex items-center justify-center shadow-lg animate-scale-pulse"
           >
             <lucide-icon name="message-circle" size="40" class="text-white"></lucide-icon>
           </div>
         </div>
         <div
-          class="w-16 h-16 -top-18 right-4 absolute bg-linear-to-br from-accent/30 to-accent/10 rounded-2xl animate-float-rotate"
+          class="hidden lg:block w-16 h-16 -top-18 right-4 absolute bg-linear-to-br from-accent/30 to-accent/10 rounded-2xl animate-float-rotate"
         ></div>
       </div>
 
       <!-- Welcome Text -->
-      <h1 class="text-4xl font-bold text-gray-800 mb-4">
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 lg:mb-4">
         Join <span class="gradient-text">TalkFlow</span> Today.
       </h1>
-      <p class="text-gray-600 text-base mb-12 max-w-md leading-relaxed">
+      <p class="text-gray-600 text-sm lg:text-base mb-4 lg:mb-12 max-w-md leading-relaxed">
         Create your account and start connecting with people around the world. Fast, secure, and
         beautifully simple.
       </p>

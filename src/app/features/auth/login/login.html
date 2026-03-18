@@ -1,43 +1,41 @@
 <div
-  class="bg-linear-to-br from-primary/5 via-white to-primary/5 min-h-screen flex items-center justify-center p-4"
+  class="bg-linear-to-br from-primary/5 via-white to-primary/5 min-h-screen flex items-center justify-center p-4 sm:pt-8"
 >
-  <div class="w-full max-w-6xl flex items-center justify-between gap-12">
+  <div class="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+
     <!-- Left Section -->
-    <div class="flex-1 relative flex flex-col animate-slide-in-left">
+    <div class="flex-1 relative flex flex-col items-center text-center lg:items-start lg:text-left animate-slide-in-left w-full">
+
       <!-- Logo Icons -->
-      <div class="flex items-start w-fit gap-4 mb-8 relative">
+      <div class="flex items-start w-fit gap-4 mb-6 lg:mb-8 relative">
         <div class="flex animate-fade-in items-start gap-4ml-0">
           <div
-            class="w-20 h-20 popin gradient-button rounded-2xl flex items-center justify-center shadow-lg animate-scale-pulse"
+            class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 popin gradient-button rounded-2xl flex items-center justify-center shadow-lg animate-scale-pulse"
           >
             <lucide-icon name="message-circle" size="40" class="text-white"></lucide-icon>
           </div>
         </div>
         <div
-          class="w-16 h-16 -top-18 -right-18 absolute bg-linear-to-br from-accent/30 to-accent/10 rounded-2xl animate-float-rotate"
+          class="hidden lg:block w-16 h-16 -top-18 -right-18 absolute bg-linear-to-br from-accent/30 to-accent/10 rounded-2xl animate-float-rotate"
         ></div>
       </div>
 
       <!-- Welcome Text -->
-      <h1 class="text-4xl font-bold text-gray-800 mb-4">
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 lg:mb-4">
         Welcome to <span class="gradient-text">TalkFlow</span>
       </h1>
-      <p class="text-gray-600 text-base mb-12 max-w-md leading-relaxed">
+      <p class="text-gray-600 text-sm lg:text-base mb-6 lg:mb-12 max-w-md leading-relaxed">
         Connect with friends and family through seamless messaging and crystal-clear calls. Your
         conversations, beautifully simple.
       </p>
 
-      <!-- Features -->
-      <div class="space-y-6">
+      <!-- Features — hidden on mobile, visible md+ -->
+      <div class="hidden md:flex flex-col space-y-6">
         <div class="flex items-center gap-4">
           <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
             <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"
-              ></path>
-              <path
-                d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"
-              ></path>
+              <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+              <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
             </svg>
           </div>
           <span class="text-gray-600 text-sm">Real-time messaging</span>
@@ -46,9 +44,7 @@
         <div class="flex items-center gap-4">
           <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
             <svg class="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
-              ></path>
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
             </svg>
           </div>
           <span class="text-gray-600 text-sm">HD voice & video calls</span>
@@ -66,9 +62,9 @@
           </div>
           <span class="text-gray-600 text-sm">End-to-end encrypted</span>
 
-          <!-- Decorative Circle -->
+          <!-- Decorative Circle — hidden on mobile -->
           <div
-            class="w-10 h-10 bg-linear-to-br left-12 -top-10 from-accent/30 to-accent/10 absolute rounded-full mt-12 animate-bounce-gentle"
+            class="hidden lg:block w-10 h-10 bg-linear-to-br left-12 -top-10 from-accent/30 to-accent/10 absolute rounded-full mt-12 animate-bounce-gentle"
           ></div>
         </div>
       </div>
@@ -78,11 +74,11 @@
     <form
       [formGroup]="loginForm"
       (ngSubmit)="handleSubmit()"
-      class="w-full max-w-md animate-slide-up"
+      class="w-full max-w-full md:max-w-lg lg:max-w-md animate-slide-up"
     >
-      <div class="bg-white rounded-3xl shadow-2xl p-10">
-        <h2 class="text-xl font-bold text-gray-800 mb-2">Sign in</h2>
-        <p class="text-gray-500 mb-8 text-sm">Welcome back! Please enter your details.</p>
+      <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10">
+        <h2 class="text-lg lg:text-xl font-bold text-gray-800 mb-2">Sign in</h2>
+        <p class="text-gray-500 mb-6 lg:mb-8 text-sm">Welcome back! Please enter your details.</p>
 
         <!-- Email Input -->
         <div class="mb-5">
@@ -111,9 +107,6 @@
         <div class="mb-6">
           <div class="flex items-center justify-between mb-2">
             <label class="block text-gray-700 text-xs font-medium">Password</label>
-            <!-- <a href="#" class="gradient-text text-xs font-medium hover:underline"
-              >Forgot password?</a
-            > -->
           </div>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -125,7 +118,6 @@
               placeholder="Enter your password"
               class="w-full pl-10 pr-4 text-xs py-3 border border-gray-300 rounded-lg focus:outline-offset-[5px] focus:outline-primary focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-
             <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center">
               <lucide-icon
                 *ngIf="!toggleEye"
@@ -145,9 +137,9 @@
           </div>
           <div *ngIf="isSubmitted() && form['password'].errors">
             <p class="error" *ngIf="form['password'].errors['required']">Password is required.</p>
-            <p class="error" *ngIf="form['password'].errors['pattern']">
+            <!-- <p class="error" *ngIf="form['password'].errors['pattern']">
               8 characters, uppercase, lowercase, number and a special character.
-            </p>
+            </p> -->
           </div>
         </div>
 

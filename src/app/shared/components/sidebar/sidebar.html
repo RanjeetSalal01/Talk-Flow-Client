@@ -1,22 +1,24 @@
-<div class="h-screen w-64 bg-sidebar-background flex flex-col border-r border-gray-200">
+<div class="h-screen w-16 md:w-20 lg:w-64 bg-sidebar-background flex flex-col border-r border-gray-200">
+
   <!-- Logo Section -->
-  <div class="p-6 border-b">
+  <div class="p-3 md:p-4 lg:p-6 border-b flex justify-center lg:justify-start">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 gradient-button rounded-base flex items-center justify-center">
+      <div class="w-10 h-10 gradient-button rounded-base flex items-center justify-center shrink-0">
         <lucide-icon name="message-circle" size="20" class="text-white"></lucide-icon>
       </div>
-      <span class="font-bold text-lg gradient-text"> TalkFlow </span>
+      <!-- Label hidden on mobile/tablet, visible on desktop -->
+      <span class="hidden lg:block font-bold text-lg gradient-text">TalkFlow</span>
     </div>
   </div>
 
   <!-- Navigation Menu -->
-  <nav class="flex-1 px-5 py-4 space-y-1">
+  <nav class="flex-1 px-2 lg:px-5 py-4 space-y-1">
     <div
       class="relative flex items-center cursor-pointer"
       (click)="redirect(item)"
       *ngFor="let item of navItems"
     >
-      <!-- Indicator bar - only shows when selected -->
+      <!-- Indicator bar -->
       <div *ngIf="isSelected(item.id)" class="w-1 absolute h-8 bg-primary rounded-r-lg"></div>
       <div *ngIf="!isSelected(item.id)" class="w-1"></div>
 
@@ -25,28 +27,36 @@
           'bg-sidebar-accent': isSelected(item.id),
           'hover:bg-gray-50': !isSelected(item.id),
         }"
-        class="flex-1 cursor-pointer flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200"
+        class="flex-1 cursor-pointer flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-4 py-3 rounded-lg transition-all duration-200 relative"
       >
         <lucide-icon
           [name]="item.icon"
           size="18"
           [ngClass]="isSelected(item.id) ? 'text-primary' : 'text-gray-400'"
         ></lucide-icon>
+
+        <!-- Label: hidden on mobile/tablet -->
         <span
           [ngClass]="isSelected(item.id) ? 'text-gray-800' : 'text-gray-600'"
-          class="flex-1 text-left text-[13px] font-semibold"
+          class="hidden lg:flex flex-1 text-left text-[13px] font-semibold"
         >
           {{ item.label }}
         </span>
+
+        <!-- Chat badge -->
         <span
           *ngIf="item.id === 'chats' && badge.chatUnread() > 0"
-          class="min-w-4 h-4 flex items-center justify-center bg-primary text-white text-[9px] font-bold rounded-full px-1"
+          class="min-w-4 h-4 flex items-center justify-center bg-primary text-white text-[9px] font-bold rounded-full px-1
+                 absolute top-1 right-1 lg:static lg:top-auto lg:right-auto"
         >
           {{ badge.chatUnread() }}
         </span>
+
+        <!-- Request badge -->
         <span
           *ngIf="item.id === 'requests' && badge.requestUnread() > 0"
-          class="min-w-4 h-4 flex items-center justify-center bg-primary text-white text-[9px] font-bold rounded-full px-1"
+          class="min-w-4 h-4 flex items-center justify-center bg-primary text-white text-[9px] font-bold rounded-full px-1
+                 absolute top-1 right-1 lg:static lg:top-auto lg:right-auto"
         >
           {{ badge.requestUnread() }}
         </span>
@@ -55,35 +65,41 @@
   </nav>
 
   <!-- User Profile Section -->
-  <div class="p-4 border-t">
+  <div class="p-2 lg:p-4 border-t">
     <div class="bg-white rounded-lg border p-1">
-      <div class="flex items-center gap-3 px-2 py-1 cursor-pointer group">
+      <div class="flex items-center justify-center lg:justify-start gap-3 px-1 lg:px-2 py-1 cursor-pointer group">
+
         <!-- Avatar -->
         <img
           *ngIf="auth.user().avatarUrl"
           [src]="auth.user().avatarUrl"
-          class="w-8 h-8 rounded-full object-cover"
+          class="w-8 h-8 rounded-full object-cover shrink-0"
         />
         <app-name-initials
           *ngIf="!auth.user().avatarUrl"
           [name]="auth.user().fullName"
+          class="shrink-0"
         ></app-name-initials>
-        <!-- User Info -->
-        <div class="flex-1 min-w-0">
+
+        <!-- User Info: hidden on mobile/tablet -->
+        <div class="hidden lg:flex flex-col flex-1 min-w-0">
           <p class="text-gray-900 font-semibold text-xs truncate">{{ auth.user().fullName }}</p>
           <p class="text-gray-500 text-[10px] flex items-center gap-1">
             <span class="w-2 h-2 bg-green-500 rounded-full"></span>
             Online
           </p>
         </div>
-        <!-- Logout Options -->
+
+        <!-- Logout: hidden on mobile/tablet -->
         <button
           (click)="openLogoutModal()"
-          class="text-gray-400 cursor-pointer transition-all duration-200 hover:text-cyan-500 hover:rotate-12"
+          class="hidden lg:block text-gray-400 cursor-pointer transition-all duration-200 hover:text-cyan-500 hover:rotate-12"
         >
           <lucide-icon name="log-out" size="18"></lucide-icon>
         </button>
+
       </div>
     </div>
   </div>
+
 </div>

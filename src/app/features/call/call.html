@@ -13,11 +13,18 @@
 
     <!-- Empty -->
     <div
+      class="flex flex-col gap-y-4 justify-center mt-16 items-center"
       *ngIf="!loading && calls.length === 0"
-      class="flex flex-col items-center justify-center py-20 text-muted-foreground"
     >
-      <lucide-icon name="phone-off" size="40" class="mb-3 opacity-30"></lucide-icon>
-      <p class="text-sm">No call history yet</p>
+      <div class="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+        <lucide-icon name="phone" size="20" class="text-muted-foreground"></lucide-icon>
+      </div>
+      <div class="text-center space-y-2 flex flex-col items-center justify-center">
+        <p class="font-medium text-foreground/70 text-sm">No call history yet</p>
+        <p class="text-muted-foreground max-w-60 text-xs">
+          Your voice and video calls will appear here once you start connecting with friends.
+        </p>
+      </div>
     </div>
 
     <!-- Call List -->

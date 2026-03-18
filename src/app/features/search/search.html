@@ -1,11 +1,13 @@
 <div class="min-h-screen bg-background">
+
   <!-- Header -->
-  <div class="bg-card px-6 py-6">
-    <h1 class="text-xl font-bold text-foreground">Find People</h1>
+  <div class="bg-card px-4 md:px-6 py-4 md:py-6">
+    <h1 class="text-lg md:text-xl font-bold text-foreground">Find People</h1>
     <p class="text-xs text-muted-foreground mt-1">Search and connect with new friends</p>
   </div>
 
-  <div class="w-full px-6 pb-8 pt-2">
+  <div class="w-full px-4 md:px-6 pb-8 pt-2">
+
     <!-- Search box -->
     <div class="mb-6">
       <div class="relative">
@@ -22,23 +24,22 @@
     </div>
 
     <!-- Results -->
-    <div class="space-y-4">
-      <!-- Item 1 -->
+    <div class="space-y-4 overflow-y-auto max-h-[calc(100vh-180px)] pr-2">
 
-      <!-- skeleton -->
+      <!-- Skeleton -->
       <ng-container *ngIf="loading">
         <div
           *ngFor="let i of [1, 2, 3]"
           class="bg-card border border-border rounded-lg p-4 flex items-center justify-between animate-pulse"
         >
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-muted"></div>
+          <div class="flex items-center gap-3 md:gap-4">
+            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-muted shrink-0"></div>
             <div class="space-y-2">
               <div class="h-3 w-24 bg-muted rounded"></div>
-              <div class="h-2 w-40 bg-muted rounded"></div>
+              <div class="h-2 w-32 md:w-40 bg-muted rounded"></div>
             </div>
           </div>
-          <div class="h-8 w-20 bg-muted rounded-lg"></div>
+          <div class="h-8 w-16 md:w-20 bg-muted rounded-lg"></div>
         </div>
       </ng-container>
 
@@ -46,19 +47,17 @@
         <ng-container *ngIf="users.length > 0">
           <div
             *ngFor="let user of users; trackBy: trackByUser"
-            class="bg-card border border-border rounded-lg p-4 flex items-center justify-between"
+            class="bg-card border border-border rounded-lg p-4 flex items-center justify-between gap-3"
           >
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
               <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"
+                [src]="user.avatarUrl"
                 alt="alice"
-                class="w-12 h-12 rounded-full object-cover border-2 border-border"
+                class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-border shrink-0"
               />
-              <div>
-                <div class="font-semibold text-foreground text-xs">{{ user.username }}</div>
-                <div class="text-[10px] text-muted-foreground">
-                  {{ user.bio }}
-                </div>
+              <div class="min-w-0">
+                <div class="font-semibold text-foreground text-xs truncate">{{ user.username }}</div>
+                <div class="text-[10px] text-muted-foreground truncate">{{ user.bio }}</div>
               </div>
             </div>
             <button
@@ -69,7 +68,7 @@
                 'border border-warning text-warning': user.status === 'pending',
                 'bg-success/10 text-success': user.status === 'friends',
               }"
-              class="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg text-xs"
+              class="cursor-pointer flex items-center gap-1 md:gap-2 px-3 md:px-4 py-2 rounded-lg text-xs shrink-0"
             >
               <lucide-icon
                 *ngIf="user.status == 'none'"
@@ -89,10 +88,15 @@
                 size="16"
                 class="text-success"
               ></lucide-icon>
-              {{user.status == 'friends' ? 'Friends' : user.status == 'pending' ? 'Pending' : 'Request'}}
+              <!-- Label hidden on very small screens, visible sm+ -->
+              <span class="hidden sm:inline">
+                {{ user.status == 'friends' ? 'Friends' : user.status == 'pending' ? 'Pending' : 'Request' }}
+              </span>
             </button>
-          </div></ng-container
-        >
+          </div>
+        </ng-container>
+
+        <!-- Empty State -->
         <div
           class="flex flex-col gap-y-4 justify-center mt-16 items-center"
           *ngIf="users.length === 0"
@@ -108,6 +112,7 @@
           </div>
         </div>
       </ng-container>
+
     </div>
   </div>
 </div>

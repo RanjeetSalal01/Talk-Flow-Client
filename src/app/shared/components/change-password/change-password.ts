@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { SharedModule } from '../../shared.module';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -16,15 +16,20 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './change-password.css',
 })
 export class ChangePassword {
-  saving = false;
+  saving = signal(false);
   showCurrent = false;
   showNew = false;
   showConfirm = false;
 
+  isSubmitted = signal(false);
+
   form = new FormGroup(
     {
       currentPassword: new FormControl('', Validators.required),
-      newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      newPassword: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/),
+      ]),
       confirmPassword: new FormControl('', Validators.required),
     },
     {
@@ -51,8 +56,9 @@ export class ChangePassword {
   }
 
   submit(): void {
+    this.isSubmitted.set(true);
     if (this.form.invalid) return;
-    this.saving = true;
+    this.saving.set(true);
     this.app
       .patch(API.endPoint.changePassword, {
         currentPassword: this.form.value.currentPassword,
@@ -63,10 +69,11 @@ export class ChangePassword {
           this.ref.close();
           this.router.navigate(['/auth/login']);
           this.toast.success('Password changed successfully');
+          this.saving.set(false);
         },
         error: (err) => {
           this.toast.error(err.error?.message ?? 'Something went wrong');
-          this.saving = false;
+          this.saving.set(false);
         },
       });
   }

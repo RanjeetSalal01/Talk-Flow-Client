@@ -171,6 +171,10 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
+  isMobileView(): boolean {
+    return window.innerWidth < 1024; // matches Tailwind's lg breakpoint
+  }
+
   private updateChatBadge(): void {
     const total = this.convs.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
     this.badge.chatUnread.set(total);
@@ -199,7 +203,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
       .subscribe({
         next: (res) => {
           this.convs = Array.isArray(res) ? res : (res.data ?? []);
-          this.filteredConvs = [...this.convs]
+          this.filteredConvs = [...this.convs];
           this.loadingConvs = false;
           this.updateChatBadge();
           this.cdr.detectChanges();
@@ -355,6 +359,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
               },
               ...this.convs,
             ];
+            this.filteredConvs = [...this.convs];
           }
           this.msgs = this.msgs.map((m) =>
             m._id === optimistic._id ? { ...(res.message ?? res) } : m,
@@ -403,6 +408,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
           }
           // ✅ move conv to top
           this.convs = [conv, ...this.convs.filter((c) => c._id !== conv._id)];
+          this.filteredConvs = [...this.convs];
         } else {
           // ✅ new conv — reload from server to get full conv data
           this.loadConvs();
@@ -606,6 +612,7 @@ export class Chat implements OnInit, OnDestroy, AfterViewChecked {
                       },
                       ...this.convs,
                     ];
+                    this.filteredConvs = [...this.convs];
                   }
                   // ✅ replace with real URL, remove spinner
                   this.msgs = this.msgs.map((m) =>

@@ -1,6 +1,16 @@
 <div class="flex h-screen w-full bg-background">
+
   <!-- Conversations Panel -->
-  <div class="w-130 flex flex-col bg-card border-r border-border relative">
+  <!-- Mobile: full width when no conv selected | lg: fixed w-130 always visible -->
+  <div
+    class="flex flex-col bg-card border-r border-border relative
+           w-full lg:w-130
+           lg:flex
+           transition-all duration-300"
+    [class.hidden]="selectedConv && isMobileView()"
+    [class.flex]="!selectedConv || !isMobileView()"
+  >
+
     <!-- ── CHAT LIST VIEW ── -->
     <ng-container *ngIf="!showFriends">
       <div class="border-b flex flex-col px-4 py-4 gap-y-5">
@@ -38,11 +48,7 @@
           class="flex flex-col items-center justify-center h-full gap-3 px-6 text-center py-16"
         >
           <div class="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-            <lucide-icon
-              name="message-circle"
-              size="20"
-              class="text-muted-foreground"
-            ></lucide-icon>
+            <lucide-icon name="message-circle" size="20" class="text-muted-foreground"></lucide-icon>
           </div>
           <p class="text-sm font-medium text-foreground/70">No conversations yet</p>
           <p class="text-xs text-muted-foreground">Start a new chat by clicking the button below</p>
@@ -68,10 +74,7 @@
               ></div>
             </div>
             <ng-template #convInitials>
-              <app-name-initials
-                [name]="conv.fullName"
-                [isOnline]="conv.isOnline"
-              ></app-name-initials>
+              <app-name-initials [name]="conv.fullName" [isOnline]="conv.isOnline"></app-name-initials>
             </ng-template>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-center gap-2">
@@ -87,14 +90,8 @@
                 >
                   typing
                   <span class="w-1 h-1 bg-primary rounded-full animate-pulse"></span>
-                  <span
-                    class="w-1 h-1 bg-primary rounded-full animate-pulse"
-                    style="animation-delay: 0.2s"
-                  ></span>
-                  <span
-                    class="w-1 h-1 bg-primary rounded-full animate-pulse"
-                    style="animation-delay: 0.4s"
-                  ></span>
+                  <span class="w-1 h-1 bg-primary rounded-full animate-pulse" style="animation-delay: 0.2s"></span>
+                  <span class="w-1 h-1 bg-primary rounded-full animate-pulse" style="animation-delay: 0.4s"></span>
                 </span>
                 <p
                   *ngIf="!typingUsers.has(conv._id)"
@@ -105,8 +102,7 @@
                 <span
                   *ngIf="conv.unreadCount > 0"
                   class="flex items-center justify-center min-w-4 h-4 bg-primary text-primary-foreground rounded-full text-[9px] font-bold shrink-0 ml-auto"
-                  >{{ conv.unreadCount }}</span
-                >
+                >{{ conv.unreadCount }}</span>
               </div>
             </div>
           </div>
@@ -200,15 +196,33 @@
   </div>
 
   <!-- Chat Area -->
-  <div class="flex flex-col w-full bg-background">
+  <!-- Mobile: full width when conv selected | lg: always visible -->
+  <div
+    class="flex flex-col bg-background
+           w-full
+           lg:flex
+           transition-all duration-300"
+    [class.hidden]="!selectedConv && isMobileView()"
+    [class.flex]="selectedConv || !isMobileView()"
+  >
     <ng-container *ngIf="selectedConv; else emptyState">
+
       <!-- Header -->
-      <div class="flex justify-between items-center px-6 py-4 border-b border-border bg-card">
+      <div class="flex justify-between items-center px-3 md:px-6 py-4 border-b border-border bg-card">
         <div class="flex items-center gap-3">
+
+          <!-- Back button: mobile only -->
+          <button
+            class="flex lg:hidden items-center justify-center w-8 h-8 rounded-full hover:bg-muted transition cursor-pointer"
+            (click)="selectedConv = null"
+          >
+            <lucide-icon name="chevron-left" size="18" class="text-foreground"></lucide-icon>
+          </button>
+
           <img
             *ngIf="selectedConv.avatarUrl; else headerInitials"
             [src]="selectedConv.avatarUrl"
-            class="w-10 h-10 rounded-full object-cover border-2 border-border"
+            class="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-border"
           />
           <ng-template #headerInitials>
             <app-name-initials [name]="selectedConv.fullName"></app-name-initials>
@@ -220,7 +234,7 @@
             </p>
           </div>
         </div>
-        <div class="flex gap-5">
+        <div class="flex gap-3 md:gap-5">
           <button (click)="startCall('audio')" class="text-muted-foreground cursor-pointer">
             <lucide-icon name="phone" size="16"></lucide-icon>
           </button>
@@ -233,17 +247,15 @@
       <!-- Messages -->
       <div
         #msgContainer
-        class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-4"
+        class="flex-1 overflow-y-auto px-3 md:px-6 py-4 md:py-6 flex flex-col gap-4"
         (scroll)="onScroll($event)"
       >
         <!-- pagination spinner -->
         <div *ngIf="loadingMore" class="flex justify-center py-1">
-          <div
-            class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"
-          ></div>
+          <div class="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
 
-        <!-- skeleton — only when msgs empty and loading -->
+        <!-- skeleton -->
         <ng-container *ngIf="loadingMsgs && msgs.length === 0">
           <div class="flex justify-start">
             <div class="h-10 w-48 rounded-xl rounded-tl-sm bg-muted animate-pulse"></div>
@@ -269,28 +281,24 @@
             [class]="msg.senderId === auth.userId() ? 'flex justify-end' : 'flex justify-start'"
           >
             <div
-              class="flex flex-col gap-1 max-w-xs lg:max-w-md"
+              class="flex flex-col gap-1 max-w-[75%] sm:max-w-xs lg:max-w-md"
               [class]="msg.senderId === auth.userId() ? 'items-end' : 'items-start'"
             >
-              <!-- ── image ── -->
+              <!-- image -->
               <div *ngIf="isImage(msg)" class="relative">
                 <img
                   [src]="msg.mediaUrl"
-                  class="max-w-60 max-h-60 object-cover rounded-xl block transition-opacity"
+                  class="max-w-[200px] sm:max-w-60 max-h-60 object-cover rounded-xl block transition-opacity"
                   [class.opacity-50]="msg.uploadState === 'uploading'"
                   [class.cursor-pointer]="!msg.uploadState"
                   (click)="!msg.uploadState && openMedia(msg.mediaUrl!)"
                 />
-                <!-- uploading overlay -->
                 <div
                   *ngIf="msg.uploadState === 'uploading'"
                   class="absolute inset-0 flex items-center justify-center rounded-xl bg-black/20"
                 >
-                  <div
-                    class="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"
-                  ></div>
+                  <div class="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 </div>
-                <!-- failed overlay -->
                 <div
                   *ngIf="msg.uploadState === 'failed'"
                   class="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/40 gap-1 cursor-pointer"
@@ -301,25 +309,21 @@
                 </div>
               </div>
 
-              <!-- ── video ── -->
+              <!-- video -->
               <div *ngIf="isVideo(msg)" class="relative">
                 <video
                   [src]="msg.mediaUrl"
                   controls
-                  class="max-w-60 rounded-xl block transition-opacity"
+                  class="max-w-[200px] sm:max-w-60 rounded-xl block transition-opacity"
                   preload="metadata"
                   [class.opacity-50]="msg.uploadState === 'uploading'"
                 ></video>
-                <!-- uploading overlay -->
                 <div
                   *ngIf="msg.uploadState === 'uploading'"
                   class="absolute inset-0 flex items-center justify-center rounded-xl bg-black/20"
                 >
-                  <div
-                    class="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"
-                  ></div>
+                  <div class="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 </div>
-                <!-- failed overlay -->
                 <div
                   *ngIf="msg.uploadState === 'failed'"
                   class="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/40 gap-1 cursor-pointer"
@@ -330,7 +334,7 @@
                 </div>
               </div>
 
-              <!-- ── file ── -->
+              <!-- file -->
               <div
                 *ngIf="isFile(msg)"
                 class="flex items-center gap-2 px-4 py-3 rounded-xl min-w-32 transition-opacity"
@@ -347,12 +351,7 @@
                   *ngIf="msg.uploadState === 'uploading'"
                   class="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin shrink-0"
                 ></div>
-                <lucide-icon
-                  *ngIf="!msg.uploadState"
-                  name="paperclip"
-                  size="12"
-                  class="shrink-0"
-                ></lucide-icon>
+                <lucide-icon *ngIf="!msg.uploadState" name="paperclip" size="12" class="shrink-0"></lucide-icon>
                 <lucide-icon
                   *ngIf="msg.uploadState === 'failed'"
                   name="refresh-cw"
@@ -360,10 +359,10 @@
                   class="shrink-0 cursor-pointer"
                   (click)="retryUpload(msg)"
                 ></lucide-icon>
-                <span class="text-xs truncate max-w-45">{{ msg.mediaName || 'File' }}</span>
+                <span class="text-xs truncate max-w-[120px] sm:max-w-45">{{ msg.mediaName || 'File' }}</span>
               </div>
 
-              <!-- ── text ── -->
+              <!-- text -->
               <div
                 *ngIf="!msg.mediaUrl"
                 class="px-4 py-2 text-xs leading-relaxed wrap-break-word"
@@ -378,9 +377,7 @@
 
               <!-- timestamp + status -->
               <div class="flex items-center gap-1 px-1">
-                <span class="text-[10px] text-muted-foreground">{{
-                  msg.createdAt | date: 'shortTime'
-                }}</span>
+                <span class="text-[10px] text-muted-foreground">{{ msg.createdAt | date: 'shortTime' }}</span>
                 <ng-container *ngIf="msg.senderId === auth.userId()">
                   <lucide-icon
                     *ngIf="msg.status === 'sent' && !msg.uploadState"
@@ -418,19 +415,19 @@
           <img
             *ngIf="preview.type === 'image'"
             [src]="preview.url"
-            class="w-16 h-16 object-cover rounded-lg border border-border"
+            class="w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg border border-border"
           />
           <video
             *ngIf="preview.type === 'video'"
             [src]="preview.url"
-            class="w-16 h-16 object-cover rounded-lg border border-border"
+            class="w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg border border-border"
           ></video>
           <div
             *ngIf="preview.type === 'file'"
-            class="w-16 h-16 rounded-lg border border-border bg-muted flex flex-col items-center justify-center gap-1"
+            class="w-14 h-14 md:w-16 md:h-16 rounded-lg border border-border bg-muted flex flex-col items-center justify-center gap-1"
           >
             <lucide-icon name="file" size="20" class="text-muted-foreground"></lucide-icon>
-            <span class="text-[8px] text-muted-foreground truncate w-14 text-center px-1">{{
+            <span class="text-[8px] text-muted-foreground truncate w-12 md:w-14 text-center px-1">{{
               preview.name
             }}</span>
           </div>
@@ -444,35 +441,20 @@
       </div>
 
       <!-- Input -->
-      <div class="px-4 py-3 bg-card border-t border-border shrink-0">
-        <div class="flex items-center gap-2">
-          <!-- hidden inputs for file upload -->
-          <input
-            #fileInput
-            type="file"
-            class="hidden"
-            (change)="onFileSelect($event)"
-            accept="*/*"
-            multiple
-          />
-          <input
-            #imageInput
-            type="file"
-            class="hidden"
-            (change)="onFileSelect($event)"
-            accept="image/*,video/*"
-            multiple
-          />
+      <div class="px-3 md:px-4 py-3 bg-card border-t border-border shrink-0">
+        <div class="flex items-center gap-1 md:gap-2">
+          <input #fileInput type="file" class="hidden" (change)="onFileSelect($event)" accept="*/*" multiple />
+          <input #imageInput type="file" class="hidden" (change)="onFileSelect($event)" accept="image/*,video/*" multiple />
           <lucide-icon
             name="paperclip"
             size="16"
-            class="text-muted-foreground mr-2 cursor-pointer"
+            class="text-muted-foreground mr-1 md:mr-2 cursor-pointer shrink-0"
             (click)="fileInput.click()"
           ></lucide-icon>
           <lucide-icon
             name="image"
             size="16"
-            class="text-muted-foreground mr-2 cursor-pointer"
+            class="text-muted-foreground mr-1 md:mr-2 cursor-pointer shrink-0"
             (click)="imageInput.click()"
           ></lucide-icon>
           <div class="relative w-full">
@@ -483,7 +465,6 @@
             >
               <emoji-picker (emoji-click)="onEmojiSelect($event)" class="light"></emoji-picker>
             </div>
-
             <button
               type="button"
               (click)="toggleEmoji()"
@@ -502,7 +483,7 @@
           </div>
           <button
             (click)="sendMsg()"
-            class="flex items-center justify-center cursor-pointer w-12 h-10 gradient-button rounded-lg"
+            class="flex items-center justify-center cursor-pointer w-10 h-9 md:w-12 md:h-10 gradient-button rounded-lg shrink-0"
           >
             <lucide-icon name="send" size="16" class="text-white"></lucide-icon>
           </button>
@@ -510,19 +491,17 @@
       </div>
     </ng-container>
 
+    <!-- Empty State -->
     <ng-template #emptyState>
-      <div class="flex-1 flex flex-col items-center justify-center gap-6">
-        <div
-          class="w-20 h-20 flex items-center justify-center gradient-button rounded-2xl animate-bounce"
-        >
+      <div class="flex-1 hidden lg:flex flex-col items-center justify-center gap-6">
+        <div class="w-20 h-20 flex items-center justify-center gradient-button rounded-2xl animate-bounce">
           <lucide-icon name="message-circle" size="35" class="text-white"></lucide-icon>
         </div>
         <h2 class="text-xl font-bold text-foreground">
           Welcome to <span class="gradient-text">TalkFlow</span>
         </h2>
         <p class="max-w-sm text-center text-sm text-foreground/60">
-          Select a conversation from the list to start chatting, or search for new people to connect
-          with.
+          Select a conversation from the list to start chatting, or search for new people to connect with.
         </p>
       </div>
     </ng-template>

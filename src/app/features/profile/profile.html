@@ -1,15 +1,16 @@
 <div class="h-screen overflow-auto bg-background">
-  <div class="bg-card px-6 py-6 max-w-3xl mx-auto">
-    <h1 class="text-xl font-bold text-foreground">Profile</h1>
+  <!-- Header -->
+  <div class="bg-card px-4 md:px-6 py-4 md:py-6 max-w-3xl mx-auto">
+    <h1 class="text-lg md:text-xl font-bold text-foreground">Profile</h1>
     <p class="text-xs text-muted-foreground mt-1">Manage your public profile</p>
   </div>
 
-  <div class="max-w-3xl mx-auto px-6 pb-12">
-    <div class="bg-card border border-border rounded-xl p-8">
+  <div class="max-w-3xl mx-auto px-4 md:px-6 pb-12">
+    <div class="bg-card border border-border rounded-xl p-5 md:p-8">
       <div class="flex flex-col items-center">
         <!-- Avatar -->
         <div
-          class="w-28 h-28 rounded-full ring-4 ring-primary/10 flex items-center justify-center mb-3 relative"
+          class="w-24 h-24 md:w-28 md:h-28 rounded-full ring-4 ring-primary/10 flex items-center justify-center mb-3 relative"
           [class.cursor-pointer]="isEditing"
           (click)="onAvatarClick()"
         >
@@ -17,14 +18,14 @@
           <img
             *ngIf="avatarPreview"
             [src]="avatarPreview"
-            class="w-24 h-24 rounded-full object-cover"
+            class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover"
           />
 
           <!-- existing avatar -->
           <img
             *ngIf="!avatarPreview && auth.user()?.avatarUrl"
             [src]="auth.user()?.avatarUrl"
-            class="w-24 h-24 rounded-full object-cover"
+            class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover"
           />
 
           <!-- no avatar → name initials -->
@@ -32,13 +33,17 @@
             [bigInitial]="true"
             *ngIf="!avatarPreview && !auth.user()?.avatarUrl"
             [name]="auth.user()?.fullName"
-            class="w-24 h-24 text-2xl"
+            class="w-20 h-20 md:w-24 md:h-24 text-2xl"
           ></app-name-initials>
         </div>
 
-        <label for="avatarInput" class="text-xs cursor-pointer text-muted-foreground mb-6"
-          >Click to change photo</label
+        <label
+          for="avatarInput"
+          *ngIf="isEditing"
+          class="text-xs cursor-pointer text-muted-foreground mb-5 md:mb-6"
         >
+          Click to change photo
+        </label>
         <input
           id="avatarInput"
           type="file"
@@ -47,7 +52,7 @@
           (change)="onFileSelected($event)"
         />
 
-        <div class="w-full space-y-5" [formGroup]="form">
+        <div class="w-full space-y-4 md:space-y-5" [formGroup]="form">
           <!-- Username -->
           <div>
             <label class="text-xs text-muted-foreground block mb-2">Username</label>
@@ -68,14 +73,12 @@
           <!-- Bio -->
           <div>
             <label class="text-xs text-muted-foreground block mb-2">Bio</label>
-            <!-- show text when not editing -->
             <div
               *ngIf="!isEditing"
               class="bg-secondary rounded-lg px-4 py-3 text-sm text-foreground"
             >
               {{ auth.user()?.bio || '-' }}
             </div>
-            <!-- textarea when editing -->
             <textarea
               *ngIf="isEditing"
               formControlName="bio"
@@ -85,18 +88,18 @@
           </div>
 
           <!-- Actions -->
-          <div class="flex justify-end gap-3">
+          <div class="flex justify-end gap-2 md:gap-3">
             <button
               *ngIf="isEditing"
               (click)="cancel()"
-              class="text-xs px-5 py-3 cursor-pointer rounded-lg border border-border text-muted-foreground hover:bg-muted transition"
+              class="text-xs px-4 md:px-5 py-2.5 md:py-3 cursor-pointer rounded-lg border border-border text-muted-foreground hover:bg-muted transition"
             >
               Cancel
             </button>
             <button
               *ngIf="!isEditing"
               (click)="edit()"
-              class="gradient-button text-xs flex items-center gap-2 px-5 py-3 cursor-pointer rounded-lg text-white"
+              class="gradient-button text-xs flex items-center gap-2 px-4 md:px-5 py-2.5 md:py-3 cursor-pointer rounded-lg text-white"
             >
               <lucide-icon name="edit" size="16" class="text-white"></lucide-icon>
               Edit Profile
@@ -105,7 +108,7 @@
               *ngIf="isEditing"
               (click)="save()"
               [disabled]="saving"
-              class="gradient-button text-xs flex items-center gap-2 px-5 py-3 cursor-pointer rounded-lg text-white disabled:opacity-60"
+              class="gradient-button text-xs flex items-center gap-2 px-4 md:px-5 py-2.5 md:py-3 cursor-pointer rounded-lg text-white disabled:opacity-60"
             >
               <lucide-icon
                 [name]="saving ? 'loader' : 'save'"
