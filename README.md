@@ -2,7 +2,7 @@
 
 > **Your conversations, beautifully simple.**
 
-TalkFlow is a full-stack real-time messaging and calling application built for seamless communication. Connect with friends, send instant messages, share media, and make crystal-clear voice calls — all in one clean, intuitive interface.
+TalkFlow is a full-stack real-time messaging and calling application built with **Angular** and **TypeScript**. Connect with friends, send instant messages, share media, and make crystal-clear voice & video calls — all in one clean, intuitive interface.
 
 🌐 **Live App:** [talk-flow-client.vercel.app](https://talk-flow-client.vercel.app)
 
@@ -54,7 +54,8 @@ TalkFlow is a full-stack real-time messaging and calling application built for s
 ### 🔐 Authentication
 - Secure sign-in with email and password
 - Account registration for new users
-- Session / JWT management
+- JWT with Angular **HTTP Interceptors** for auth headers
+- Route protection via **Angular Guards**
 
 ---
 
@@ -62,11 +63,12 @@ TalkFlow is a full-stack real-time messaging and calling application built for s
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React.js |
+| Frontend | Angular + TypeScript |
 | Real-time | WebSockets |
 | Calling | WebRTC |
-| Deployment | Vercel |
-| Auth | JWT / Session-based |
+| Frontend Deployment | Vercel |
+| Backend Deployment | Render |
+| Auth | JWT + Angular Interceptors |
 | Styling | Custom CSS (UI designed with Lovable) |
 
 ---
@@ -75,7 +77,7 @@ TalkFlow is a full-stack real-time messaging and calling application built for s
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- npm or yarn
+- Angular CLI (`npm install -g @angular/cli`)
 
 ### Installation
 
@@ -83,23 +85,36 @@ TalkFlow is a full-stack real-time messaging and calling application built for s
 # Clone the repository
 git clone https://github.com/your-username/talkflow.git
 
-# Navigate to the project directory
-cd talkflow
+# Navigate to the client directory
+cd talkflow/Client
 
 # Install dependencies
 npm install
 
 # Start the development server
-npm run dev
+ng serve
 ```
 
 ### Environment Variables
 
-Create a `.env` file in the root directory:
+Update `src/environments/environment.ts`:
 
-```env
-VITE_API_URL=your_backend_api_url
-VITE_SOCKET_URL=your_websocket_url
+```typescript
+export const environment = {
+  production: false,
+  apiBaseUrl: 'http://localhost:3000/api',
+  socketUrl: 'http://localhost:3000'
+};
+```
+
+For production (`environment.prod.ts`):
+
+```typescript
+export const environment = {
+  production: true,
+  apiBaseUrl: 'https://talk-flow-server.onrender.com/api',
+  socketUrl: 'https://talk-flow-server.onrender.com'
+};
 ```
 
 ---
@@ -107,26 +122,35 @@ VITE_SOCKET_URL=your_websocket_url
 ## 📁 Project Structure
 
 ```
-talkflow/
+Client/
 ├── src/
-│   ├── pages/
-│   │   ├── Chats.jsx         # Chat list & real-time messaging
-│   │   ├── Search.jsx        # Find people
-│   │   ├── Requests.jsx      # Friend requests (real-time)
-│   │   ├── Calls.jsx         # Call history
-│   │   ├── Profile.jsx       # User profile
-│   │   └── Settings.jsx      # App settings
-│   ├── components/
-│   │   ├── Sidebar.jsx       # Navigation sidebar
-│   │   ├── ChatWindow.jsx    # Messaging UI + typing indicator
-│   │   ├── CallUI.jsx        # WebRTC call interface
-│   │   └── ...
-│   ├── hooks/
-│   │   ├── useSocket.js      # WebSocket connection
-│   │   ├── useWebRTC.js      # WebRTC calling logic
-│   │   └── ...
-│   └── App.jsx
-├── public/
+│   └── app/
+│       ├── core/
+│       │   ├── config/           # App configuration
+│       │   ├── guards/           # Route guards (auth protection)
+│       │   ├── interceptors/     # HTTP interceptors (JWT auth)
+│       │   └── services/         # Core services (socket, auth, etc.)
+│       │
+│       ├── features/
+│       │   ├── auth/             # Login & registration
+│       │   ├── call/             # WebRTC voice & video calling
+│       │   ├── chat/             # Real-time messaging
+│       │   ├── profile/          # User profile management
+│       │   ├── request/          # Friend requests (real-time)
+│       │   ├── search/           # Find people
+│       │   └── setting/          # App settings
+│       │
+│       ├── layout/
+│       │   ├── auth-layout/      # Layout for auth pages
+│       │   └── main-layout/      # Layout for app pages
+│       │
+│       ├── shared/
+│       │   ├── components/       # Reusable UI components
+│       │   └── shared.module.ts
+│       │
+│       ├── app.config.ts
+│       ├── app.routes.ts
+│       └── app.html
 └── package.json
 ```
 
@@ -136,8 +160,10 @@ talkflow/
 
 - **WebSocket integration** for real-time messaging, typing indicators, read receipts, online presence, and friend requests — all running simultaneously
 - **WebRTC peer-to-peer calling** for voice and video with signaling handled over WebSockets
+- **Angular Guards** for protecting authenticated routes
+- **HTTP Interceptors** for automatically attaching JWT tokens to every API request
+- **Feature-based Angular architecture** for scalability and clean separation of concerns
 - **Media sharing pipeline** for in-chat file and image transfers
-- **JWT-based authentication** with protected routes
 - **Real-time friend request system** with instant UI updates across clients
 
 ---
@@ -162,8 +188,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## 👨‍💻 Author
 
-**Rahul Sharma**
-- Username: `@rahul_sharma_7332`
+**Ranjeet Singh**
 - Built with ❤️ and ☕
 
 ---
