@@ -39,13 +39,23 @@ export class CallModal implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // ✅ ADD THIS BLOCK
+    this.callService.onRemoteStream = (stream) => {
+      setTimeout(() => {
+        const remoteVideoEl = document.getElementById('remoteVideo') as HTMLVideoElement;
+        if (remoteVideoEl) remoteVideoEl.srcObject = stream;
+        const remoteAudioEl = document.querySelector('audio#remoteVideo') as HTMLAudioElement;
+        if (remoteAudioEl) remoteAudioEl.srcObject = stream;
+      }, 0);
+    };
+
     this.callService.callState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
       this.callState = state;
 
       if (state.status === 'active') {
         this.startTimer();
         // attach streams to video elements after view updates
-        setTimeout(() => this.attachStreams(), 100);
+        setTimeout(() => this.attachLocalStream(), 100);
       }
 
       if (state.status === 'idle') {
@@ -81,15 +91,10 @@ export class CallModal implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  private attachStreams(): void {
+  private attachLocalStream(): void {
     const localEl = document.getElementById('localVideo') as HTMLVideoElement;
-    const remoteEl = document.getElementById('remoteVideo') as HTMLVideoElement;
-
     if (localEl && this.callService.localStream) {
       localEl.srcObject = this.callService.localStream;
-    }
-    if (remoteEl && this.callService.remoteStream) {
-      remoteEl.srcObject = this.callService.remoteStream;
     }
   }
 
@@ -118,6 +123,7 @@ export class CallModal implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopTimer();
+    this.callService.onRemoteStream = null;
     this.destroy$.next();
     this.destroy$.complete();
   }

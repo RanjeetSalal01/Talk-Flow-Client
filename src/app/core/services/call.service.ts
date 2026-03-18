@@ -27,6 +27,7 @@ export class CallService {
   pc: RTCPeerConnection | null = null;
   localStream: MediaStream | null = null;
   remoteStream: MediaStream | null = null;
+  onRemoteStream: ((stream: MediaStream) => void) | null = null;
 
   private pendingOffer: RTCSessionDescriptionInit | null = null;
   private currentCallId: string | null = null;
@@ -312,6 +313,9 @@ export class CallService {
     };
     this.pc!.ontrack = (e) => {
       this.remoteStream = e.streams[0];
+      if (this.onRemoteStream) {
+        this.onRemoteStream(e.streams[0]); // ✅ ADD THIS
+      }
     };
     this.pc!.onconnectionstatechange = () => {
       const s = this.pc?.connectionState;
